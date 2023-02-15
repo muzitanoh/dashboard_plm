@@ -1,0 +1,13 @@
+name: dashboard_plm
+title: dashboard_plm
+username:
+account: muzitanoh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8237190
+bundleId: 6816919
+url: https://muzitanoh.shinyapps.io/dashboard_plm/
+when: 1675722734.3883
+lastSyncTime: 1675722734.38834
+asMultiple: FALSE
+asStatic: FALSE
