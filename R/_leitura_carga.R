@@ -62,9 +62,12 @@ leitura_pec_dist <- function(dataframe) {
     filter(
       str_detect(col1, "^BARRAM")
     ) %>% 
-    mutate_at(
-      vars("x227", "x226"), as.character # Melhorar isso aqui depois
+    mutate_all(
+      as.character
     ) %>% 
+    # mutate_at(
+    #   vars("x227", "x226"), as.character # Melhorar isso aqui depois
+    # ) %>% 
     pivot_longer(
       cols = everything(),
       names_to = "lixo",
@@ -81,9 +84,12 @@ leitura_pec_dist <- function(dataframe) {
     filter(
       str_detect(x5, "^JAN")
     ) %>% 
-    mutate_at(
-      vars("x227", "x226"), as.character # Melhorar isso aqui depois
+    mutate_all(
+      as.character
     ) %>% 
+    # mutate_at(
+    #   vars("x227", "x226"), as.character # Melhorar isso aqui depois
+    # ) %>% 
     pivot_longer(
       cols = everything(),
       names_to = "lixo",
@@ -103,9 +109,12 @@ leitura_pec_dist <- function(dataframe) {
     filter(
       col1 == "no"
     ) %>% 
-    mutate_at(
-      vars("x227", "x226"), as.character # Melhorar isso aqui depois
+    mutate_all(
+      as.character
     ) %>% 
+    # mutate_at(
+    #   vars("x227", "x226"), as.character # Melhorar isso aqui depois
+    # ) %>% 
     pivot_longer(
       cols = everything(),
       names_to = "lixo",
@@ -210,6 +219,9 @@ leitura_pec_dist <- function(dataframe) {
     select(
       n_barramento, nome_barramento, distribuidora, mes, ano, patamar,
       padrao_dia, ano_ciclo, ciclo, agrupamento1, agrupamento2, particao, mw, mvar
+    ) %>% 
+    mutate(
+      agrupamento2 = if_else(is.na(agrupamento2), agrupamento1, agrupamento2)
     )
   
   
@@ -252,35 +264,29 @@ le_todas_abas_ger_dist <- function(caminho_arquivo_dit) {
 }
 
 
-caminho_arquivo_dit <- c(
-  "CEMIG D_PAR-PEL_2023-2027-Of-att.xlsx",
-  "CEMIG D_PAR-PEL_2024-2028-Of.xlsx"
-)
 
 ##### Escrita Dados #####
 
-# dados_pec <- NULL
-# 
-# tic()
-# 
-# for (n in 1:length(caminho_arquivo_dit)) {
-#   
-#   dados_dit <- le_todas_abas_ger_dist(caminho_arquivo_dit[n])
-#   
-#   
-#   dados_pec <- bind_rows(dados_pec, dados_dit)
-#   
-# }
-# 
-# toc()
-# 
-# 
-# write_rds(dados_pec, "rds/dados_cemigd_att.rds")
+caminho_arquivo_dit <- list.files("Dados Distribuidoras")
 
 
+dados_pec <- NULL
+
+tic()
+
+for (n in 1:length(caminho_arquivo_dit)) {
+  
+  dados_dit <- le_todas_abas_ger_dist(caminho_arquivo_dit[n])
+  
+  
+  dados_pec <- bind_rows(dados_pec, dados_dit)
+  
+}
+
+toc()
 
 
-
+write_rds(dados_pec, "rds/dados_sp.rds")
 
 
 
