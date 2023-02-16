@@ -267,26 +267,26 @@ le_todas_abas_ger_dist <- function(caminho_arquivo_dit) {
 
 ##### Escrita Dados #####
 
-caminho_arquivo_dit <- list.files("Dados Distribuidoras")
-
-
-dados_pec <- NULL
-
-tic()
-
-for (n in 1:length(caminho_arquivo_dit)) {
-  
-  dados_dit <- le_todas_abas_ger_dist(caminho_arquivo_dit[n])
-  
-  
-  dados_pec <- bind_rows(dados_pec, dados_dit)
-  
-}
-
-toc()
-
-
-write_rds(dados_pec, "rds/dados_sp.rds")
+# caminho_arquivo_dit <- list.files("dados_dist/sp")
+# 
+# 
+# dados_pec <- NULL
+# 
+# tic()
+# 
+# for (n in 1:length(caminho_arquivo_dit)) {
+#   
+#   dados_dit <- le_todas_abas_ger_dist(caminho_arquivo_dit[n])
+#   
+#   
+#   dados_pec <- bind_rows(dados_pec, dados_dit)
+#   
+# }
+# 
+# toc()
+# 
+# 
+# write_rds(dados_pec, "rds/dados_sp.rds")
 
 
 
