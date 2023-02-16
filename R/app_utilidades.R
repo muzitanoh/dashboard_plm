@@ -279,15 +279,28 @@ add_linha_pinst <- function(grafico, valor){
 }
 
 
+
+
+
+##### Aquisição - Dados ####
+
+#mg:
 dados_comparativo_cemigd <- read_rds("rds/dados_cemigd.rds") 
 
 dados_sens <- read_rds("rds/sensi_cemig.rds") 
-
 
 dados_comparativo_cemigd <- bind_rows(
   dados_comparativo_cemigd, dados_sens
 )
 
+
+
+#sp:
+# dados_sp <- dados_comparativo_cemigd
+
+
+
+#potência instalada de mmgd por barramento:
 pinst_mmgd <- read_rds("rds/pinst_mmgd.rds") %>% 
   rename(
     n_barramento = barra
