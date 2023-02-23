@@ -5,10 +5,9 @@ account: hugo.muzitano
 server: prd-rstd-01
 hostUrl: http://prd-rstd-01/__api__
 appId: 47
-bundleId: 195
+bundleId: 196
 url: http://prd-rstd-01/dashboardplm/
-when: 1676471394.04086
-lastSyncTime: 1676471394.04088
+when: 1677194084.093
+lastSyncTime: 1677194084.09302
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: R/_leitura_carga.R|rds/dados_cemigd_old.rds
