@@ -11,7 +11,10 @@ sidebar <- dashboardSidebar(width = 250,
                             sidebarMenu(
                               menuItem("Análise dos Dados de Carga", tabName = "analise_carga", startExpanded = TRUE,
                                        menuSubItem("Comparativo Mensal - CEMIG-D", tabName = "analise_mensal"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) - CEMIG-D", tabName = "analise_mensal_liq")
+                                       menuSubItem("Comparativo Mensal (LÍQ) - CEMIG-D", tabName = "analise_mensal_liq"),
+                                       menuSubItem("Comparativo Mensal - SP", tabName = "analise_mensal_sp"),
+                                       menuSubItem("Comparativo Mensal (LÍQ) - SP", tabName = "analise_mensal_liq_sp")
+                                       
                               ),
                               menuItem("Ferramentas Gerais" , tabName = "ferramentas_gerais",
                                        menuSubItem("Análise de Dados do Organon", tabName = "analise_organon")
@@ -36,6 +39,19 @@ body <- dashboardBody(
             modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_comparativo_cemigd, modelo = "liquido")
             
     ),
+    tabItem(tabName = "analise_mensal_sp",
+            
+            modulosUI(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal")
+    ),
+    tabItem(tabName = "analise_mensal_liq_sp",
+            
+            modulosUI(namespace = "analise_mensal_liq_sp", dados_painel = dados_sp, modelo = "liquido")
+            
+    ),
+    
+    
+    
+    
     tabItem(tabName = "analise_organon",
             
             modulosUIF(namespace = "analise_organon", modelo = "organon")
@@ -69,7 +85,9 @@ server <- function(input, output, session) {
   
   modulosServer(namespace = "analise_mensal", dados_painel =  dados_comparativo_cemigd, modelo = "normal", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_comparativo_cemigd, modelo = "liquido", pinst_mmgd = NULL)
-
+  modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq_sp", dados_painel =  dados_sp, modelo = "liquido", pinst_mmgd = NULL)
+  
 }
 
 

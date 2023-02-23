@@ -295,8 +295,8 @@ dados_comparativo_cemigd <- bind_rows(
 
 
 
-#sp:
-# dados_sp <- dados_comparativo_cemigd
+# sp:
+dados_sp <- read_rds("rds/dados_sp.rds")
 
 
 
