@@ -407,7 +407,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         particao_escolhido_local <- particao_escolhido()
         pot_instalada_mmgd_local <- pot_instalada_mmgd()
         
-        if (particao_escolhido_local[1] == "ger_mmgd") {
+        if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
           
           grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
         }
