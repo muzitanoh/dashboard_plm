@@ -23,7 +23,7 @@ modulosUI <- function(namespace, dados_painel, modelo){
   
   select_padrao_dia <- selectInput(
     inputId = NS(namespace, "escolhe_padrao_dia"),
-    label = "Padrao Dia:", 
+    label = "Padrão Dia:", 
     choices = str_to_better(sort(unique(dados_painel$padrao_dia))),
     selected = str_to_better(sort(unique(dados_painel$padrao_dia)))[1],
     multiple = FALSE
@@ -44,24 +44,7 @@ modulosUI <- function(namespace, dados_painel, modelo){
     selected = NULL,
     multiple = TRUE
   )
-  
-  select_ciclo1 <- selectInput(
-    inputId = NS(namespace, "escolhe_ciclo1"),
-    label = "Ciclo 1:", 
-    choices = sort(unique(dados_painel$ciclo)),
-    selected = sort(unique(dados_painel$ciclo))[1],
-    multiple = FALSE
-  )
-  
-  select_ciclo2 <- selectInput(
-    inputId = NS(namespace, "escolhe_ciclo2"),
-    label = "Ciclo 2:", 
-    choices = sort(unique(dados_painel$ciclo)),
-    selected = sort(unique(dados_painel$ciclo))[2],
-    multiple = FALSE
-  )
-  
-  
+
   
   
   if (modelo == "normal") {
