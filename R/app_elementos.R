@@ -37,6 +37,14 @@ modulosUI <- function(namespace, dados_painel, modelo){
     multiple = FALSE
   )
   
+  select_distribuidora <- selectInput(
+    inputId = NS(namespace, "escolhe_distribuidora"),
+    label = "Distribuidora:", 
+    choices = sort(unique(dados_painel$distribuidora)),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
   select_agrupamento2 <- selectInput(
     inputId = NS(namespace, "escolhe_agrupamento2"),
     label = "Região:", 
@@ -48,9 +56,13 @@ modulosUI <- function(namespace, dados_painel, modelo){
   
   
   if (modelo == "normal") {
-    coluna_filtros <- verticalLayout(select_particao, select_ano, select_padrao_dia, select_patamar, select_agrupamento2)
+    coluna_filtros <- verticalLayout(
+      select_particao, select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2
+    )
   } else if (modelo == "liquido") {
-    coluna_filtros <- verticalLayout(select_ano, select_padrao_dia, select_patamar, select_agrupamento2)
+    coluna_filtros <- verticalLayout(
+      select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2
+    )
   }
   
   
@@ -229,6 +241,15 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       str_to_clean(input$escolhe_padrao_dia)
     })
     
+    distribuidora_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_distribuidora)) {
+        sort(unique(dados_painel$distribuidora))
+      } else{
+        input$escolhe_distribuidora
+      }
+    })
+    
     agrupamento2_escolhido <- reactive({
     
       if (is.null(input$escolhe_agrupamento2)) {
@@ -247,6 +268,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         ano_escolhido_local <- ano_escolhido()
         patamar_escolhido_local <- patamar_escolhido()
         padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
         agrupamento2_escolhido_local <- agrupamento2_escolhido()
         
         dados <- dados_painel %>% 
@@ -255,7 +277,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
             ano == ano_escolhido_local,
             patamar == patamar_escolhido_local,
             padrao_dia == padrao_dia_escolhido_local,
-            # agrupamento1 == agrupamento1_,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
             agrupamento2 %in% agrupamento2_escolhido_local
           ) %>%
           group_by(
@@ -288,11 +311,12 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         
         
         ano_escolhido_local <- ano_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
         agrupamento2_escolhido_local <- agrupamento2_escolhido()
         
         dados_dim <- dados_painel %>%
           select(
-            n_barramento, agrupamento1, agrupamento2
+            n_barramento, distribuidora, agrupamento1, agrupamento2
           ) %>% 
           distinct_all()
         
@@ -303,7 +327,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
           ) %>%
           filter(
             ano == ano_escolhido_local,
-            # agrupamento1 == agrupamento1_,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
             agrupamento2 %in% agrupamento2_escolhido_local
           ) %>%
           summarise(
@@ -323,6 +348,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         ano_escolhido_local <- ano_escolhido()
         patamar_escolhido_local <- patamar_escolhido()
         padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
         agrupamento2_escolhido_local <- agrupamento2_escolhido()
         
         dados <- dados_painel %>% 
@@ -330,7 +356,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
             ano == ano_escolhido_local,
             patamar == patamar_escolhido_local,
             padrao_dia == padrao_dia_escolhido_local,
-            # agrupamento1 == agrupamento1_,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
             agrupamento2 %in% agrupamento2_escolhido_local
           ) %>%
           mutate(
@@ -438,191 +465,4 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
 }
 
 
-modulosServerF <- function(namespace, dados_painel, modelo){
-  
-  
-  moduleServerF(namespace, function(input, output, session){
-    
-    
-    particao_escolhido <- reactive({
-      if (input$escolhe_particao == "Carga Total") {
-        c("carga", "carga_mmgd")
-      } else if (input$escolhe_particao == "Carga") {
-        "carga"
-      } else if (input$escolhe_particao == "Carga MMGD") {
-        "carga_mmgd"
-      } else if (input$escolhe_particao == "Geração Total") {
-        c("ger_mmgd", "ger_tipo_iib_ou_iii")
-      } else if (input$escolhe_particao == "Geração Tipo IIB e/ou III") {
-        "ger_tipo_iib_ou_iii"
-      } else{
-        "ger_mmgd"
-      }
-    })
-    
-    ano_escolhido <- reactive({
-      input$escolhe_ano
-    })
-    
-    patamar_escolhido <- reactive({
-      str_to_clean(input$escolhe_patamar)
-    })
-    
-    padrao_dia_escolhido <- reactive({
-      str_to_clean(input$escolhe_padrao_dia)
-    })
-    
-    agrupamento2_escolhido <- reactive({
-      
-      if (is.null(input$escolhe_agrupamento2)) {
-        sort(unique(dados_painel$agrupamento2))
-      } else{
-        str_to_upper(input$escolhe_agrupamento2)
-      }
-    })
-    
-    
-    if (modelo != "liquido") {
-      
-      dados_tratados <- reactive({
-        
-        particao_escolhido_local <- particao_escolhido()
-        ano_escolhido_local <- ano_escolhido()
-        patamar_escolhido_local <- patamar_escolhido()
-        padrao_dia_escolhido_local <- padrao_dia_escolhido()
-        agrupamento2_escolhido_local <- agrupamento2_escolhido()
-        
-        dados <- dados_painel %>% 
-          filter(
-            particao %in% particao_escolhido_local,
-            ano == ano_escolhido_local,
-            patamar == patamar_escolhido_local,
-            padrao_dia == padrao_dia_escolhido_local,
-            # agrupamento1 == agrupamento1_,
-            agrupamento2 %in% agrupamento2_escolhido_local
-          ) %>%
-          group_by(
-            nome_mes = mes, ciclo
-          ) %>% 
-          summarise(
-            mw = sum(mw), .groups = "keep"
-          ) %>% 
-          ungroup() %>% 
-          left_join(
-            dim_mes, by = "nome_mes"
-          ) %>% 
-          arrange(
-            ciclo
-          ) %>% 
-          arrange(
-            n_mes
-          ) %>% 
-          mutate(
-            tooltip = str_glue(
-              # "{numero_br(mw)} MW"
-              "Ciclo: {ciclo}
-          {numero_br(mw)} MW"
-            )
-          )
-        
-      })
-    } else{
-      
-      dados_tratados <- reactive({
-        
-        ano_escolhido_local <- ano_escolhido()
-        patamar_escolhido_local <- patamar_escolhido()
-        padrao_dia_escolhido_local <- padrao_dia_escolhido()
-        agrupamento2_escolhido_local <- agrupamento2_escolhido()
-        
-        dados <- dados_painel %>% 
-          filter(
-            ano == ano_escolhido_local,
-            patamar == patamar_escolhido_local,
-            padrao_dia == padrao_dia_escolhido_local,
-            # agrupamento1 == agrupamento1_,
-            agrupamento2 %in% agrupamento2_escolhido_local
-          ) %>%
-          mutate(
-            particao = if_else(str_detect(particao, "^carg"), "carga_total", particao),
-            particao = if_else(str_detect(particao, "^ger"), "ger_total", particao)
-          ) %>% 
-          group_by(
-            particao, nome_mes = mes, ciclo
-          ) %>% 
-          summarise(
-            mw = sum(mw), .groups = "keep"
-          ) %>% 
-          ungroup() %>% 
-          pivot_wider(
-            values_from = "mw",
-            names_from = "particao"
-          ) %>% 
-          mutate(
-            mw = carga_total - ger_total
-          ) %>% 
-          left_join(
-            dim_mes, by = "nome_mes"
-          ) %>% 
-          arrange(
-            ciclo
-          ) %>% 
-          arrange(
-            n_mes
-          ) %>% 
-          mutate(
-            tooltip = str_glue(
-              "Ciclo: {ciclo}
-            {numero_br(mw)} MW"
-            )
-          )
-        
-      })
-    }
-    
-    
-    
-    
-    
-    output$grafico <- renderGirafe({
-      
-      
-      dados_grafico <- dados_tratados()
-      
-      grafico <- grafico_barras(dados_grafico)
-      
-      girafe(
-        code = {print(grafico)},
-        width_svg = 8,
-        height_svg = 4.5,
-        options = list(
-          opts_selection(type = "single", css = ""),
-          opts_tooltip(css = NULL, opacity = 0.9, delay_mouseover = 200, delay_mouseout = 500),
-          opts_hover(css = "")
-        )
-      )
-      
-    })
-    
-    
-    # Olhar depois
-    # total_filtrado <- reactive({
-    # 
-    #   dados_filtrado <- dados_filtrado()
-    # 
-    #   valor <- dados_filtrado %>%
-    #     summarise(valor = sum(valor)) %>%
-    #     pull() %>%
-    #     numero_br()
-    # })
-    # 
-    # output$total <- renderUI(total_filtrado() %>% h2(style = str_glue("margin-top:10px;color:{paleta_anuario[1]};padding-bottom:10px;")  ))
-    
-    
-    
-    
-  })
-  
-  
-}
 
