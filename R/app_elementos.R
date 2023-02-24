@@ -47,11 +47,20 @@ modulosUI <- function(namespace, dados_painel, modelo){
   
   select_agrupamento2 <- selectInput(
     inputId = NS(namespace, "escolhe_agrupamento2"),
-    label = "Região:", 
+    label = "Região:",
     choices = str_to_title(sort(unique(dados_painel$agrupamento2))),
     selected = NULL,
     multiple = TRUE
   )
+  
+  # select_agrupamento2 <- pickerInput(
+  #   inputId = NS(namespace, "escolhe_agrupamento2"),
+  #   label = "Região:", 
+  #   choices = str_to_title(sort(unique(dados_painel$agrupamento2))),
+  #   selected = NULL,
+  #   multiple = TRUE,
+  #   width = "auto"
+  # )
 
   
   
@@ -212,7 +221,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
   
   moduleServer(namespace, function(input, output, session){
     
-  
+
+    # Escolhas do UI:
     particao_escolhido <- reactive({
       if (input$escolhe_particao == "Carga Total") {
         c("carga", "carga_mmgd")
@@ -260,6 +270,36 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     })
     
     
+    
+    
+    
+    # Dados do UI reatvios:
+    observeEvent(input$escolhe_distribuidora, {
+      
+      distribuidora_escolhido_local <- distribuidora_escolhido()
+      
+      dados_filtrados <- dados_painel %>% 
+        filter(
+          distribuidora %in% distribuidora_escolhido_local
+        )
+      
+      updateSelectInput(
+        # session = session,
+        inputId = "escolhe_agrupamento2",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
+        selected = NULL
+      )
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Tratamento dos dados que serão apresentados:
     if (modelo == "normal") {
       
       dados_tratados <- reactive({
