@@ -168,6 +168,12 @@ numero_br <- function(numero, scale = 1, acuracia = 1){
   
 }
 
+numero_br_mw <- function(numero){
+  
+  str_glue("{number(numero, scale = 1, accuracy = 1, big.mark = '.', decimal.mark = ',' , trim = TRUE)} MW")
+  
+}
+
 str_to_better <- function(str) {
   str_to_title(str) %>% str_replace_all("_", " ")
 }
@@ -247,7 +253,7 @@ grafico_barras <- function (dados_grafico, tooltip = tooltip) {
       # axis.line.y = element_line(color = "#f5f5f5")
     ) +
     scale_y_continuous(
-      labels = numero_br
+      labels = numero_br_mw
     ) +
     scale_x_discrete(
       label = str_to_title
@@ -285,18 +291,21 @@ add_linha_pinst <- function(grafico, valor){
 ##### Aquisição - Dados ####
 
 #mg:
-dados_comparativo_cemigd <- read_rds("rds/dados_cemigd.rds") 
+dados_cemigd <- read_rds("rds/dados_cemigd.rds") 
 
-dados_sens <- read_rds("rds/sensi_cemig.rds") 
+dados_sens_cemigd <- read_rds("rds/sensi_cemig.rds") 
 
-dados_comparativo_cemigd <- bind_rows(
-  dados_comparativo_cemigd, dados_sens
+dados_cemigd <- bind_rows(
+  dados_cemigd, dados_sens_cemigd
 )
-
-
 
 # sp:
 dados_sp <- read_rds("rds/dados_sp.rds")
+
+
+# Dados SCPCB:
+
+dados_scpcb <- bind_rows(dados_cemigd, dados_sp)
 
 
 
