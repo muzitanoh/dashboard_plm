@@ -5,9 +5,10 @@ account: hugo.muzitano
 server: prd-rstd-01
 hostUrl: http://prd-rstd-01/__api__
 appId: 47
-bundleId: 196
+bundleId: 197
 url: http://prd-rstd-01/dashboardplm/
-when: 1677194084.093
-lastSyncTime: 1677194084.09302
+when: 1677521486.59604
+lastSyncTime: 1677521486.59605
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: reative_tets - Copia - Copia.R|reative_tets - Copia.R|reative_tets.R
