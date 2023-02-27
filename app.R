@@ -10,10 +10,8 @@ shinyOptions(cache = cachem::cache_disk(dir = "cache"))
 sidebar <- dashboardSidebar(width = 250,
                             sidebarMenu(
                               menuItem("Análise dos Dados de Carga", tabName = "analise_carga", startExpanded = TRUE,
-                                       menuSubItem("Comparativo Mensal - CEMIG-D", tabName = "analise_mensal"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) - CEMIG-D", tabName = "analise_mensal_liq"),
-                                       menuSubItem("Comparativo Mensal - SP", tabName = "analise_mensal_sp"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) - SP", tabName = "analise_mensal_liq_sp")
+                                       menuSubItem("Comparativo Mensal", tabName = "analise_mensal"),
+                                       menuSubItem("Comparativo Mensal (LÍQ)", tabName = "analise_mensal_liq")
                                        
                               ),
                               menuItem("Ferramentas Gerais" , tabName = "ferramentas_gerais",
@@ -32,20 +30,11 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "analise_mensal",
             
-            modulosUI(namespace = "analise_mensal", dados_painel =  dados_comparativo_cemigd, modelo = "normal")
+            modulosUI(namespace = "analise_mensal", dados_painel =  dados_scpcb, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq",
             
-            modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_comparativo_cemigd, modelo = "liquido")
-            
-    ),
-    tabItem(tabName = "analise_mensal_sp",
-            
-            modulosUI(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal")
-    ),
-    tabItem(tabName = "analise_mensal_liq_sp",
-            
-            modulosUI(namespace = "analise_mensal_liq_sp", dados_painel = dados_sp, modelo = "liquido")
+            modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_scpcb, modelo = "liquido")
             
     ),
     
@@ -83,10 +72,8 @@ server <- function(input, output, session) {
   
   options(shiny.maxRequestSize = 50*1024^2)
   
-  modulosServer(namespace = "analise_mensal", dados_painel =  dados_comparativo_cemigd, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_comparativo_cemigd, modelo = "liquido", pinst_mmgd = NULL)
-  modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq_sp", dados_painel =  dados_sp, modelo = "liquido", pinst_mmgd = NULL)
+  modulosServer(namespace = "analise_mensal", dados_painel =  dados_scpcb, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_scpcb, modelo = "liquido", pinst_mmgd = NULL)
   
 }
 
