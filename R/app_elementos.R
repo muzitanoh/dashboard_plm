@@ -473,13 +473,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
           
           grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
         }
-        
-        
       }
-        
-      
-      
-      
+
       
       girafe(
         code = {print(grafico)},
@@ -493,22 +488,6 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       )
       
     })
-    
-    
-    # Olhar depois
-    # total_filtrado <- reactive({
-    # 
-    #   dados_filtrado <- dados_filtrado()
-    # 
-    #   valor <- dados_filtrado %>%
-    #     summarise(valor = sum(valor)) %>%
-    #     pull() %>%
-    #     numero_br()
-    # })
-    # 
-    # output$total <- renderUI(total_filtrado() %>% h2(style = str_glue("margin-top:10px;color:{paleta_anuario[1]};padding-bottom:10px;")  ))
-    
-    
     
     
   })
