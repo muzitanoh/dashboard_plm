@@ -66,11 +66,11 @@ modulosUI <- function(namespace, dados_painel, modelo){
   
   if (modelo == "normal") {
     coluna_filtros <- verticalLayout(
-      tags$hr(), select_particao, select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr()
+      select_particao, select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr()
     )
   } else if (modelo == "liquido") {
     coluna_filtros <- verticalLayout(
-      tags$hr(), select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr()
+      select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr()
     )
   }
   
@@ -293,10 +293,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       
       distribuidora_escolhido_local <- distribuidora_escolhido()
       
-      dados_filtrados <- dados_painel %>% 
-        filter(
-          distribuidora %in% distribuidora_escolhido_local
-        )
+      dados_filtrados <- filter(dados_painel, distribuidora %in% distribuidora_escolhido_local)
       
       updateSelectInput(
         # session = session,
