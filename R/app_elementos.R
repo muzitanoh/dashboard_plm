@@ -181,8 +181,8 @@ modulosUIF <- function(namespace, modelo){
       "4 -> 01_INV_30+_PESADA_N EXP SE_COM CL <br>",
       "5 -> 01_VER_26_MED_NE EXP NESE 8000_SEM <br>",
       "<br>",
-      "Qualquer sugestão ou dúvida adicional, favor entrar em contato com Luis Arthur Andrade e Hugo Muzitano.",
-      style = "font-size: 1.6vh;color: #486018;"
+      "Qualquer sugestão ou dúvida adicional, favor entrar em contato com Luis Arthur Andrade e Hugo Muzitano."
+      #,style = "font-size: 1.6vh;color: #486018;"
     )
   )
 
