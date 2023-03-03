@@ -295,17 +295,29 @@ dados_cemigd <- read_rds("rds/dados_cemigd.rds")
 
 dados_sens_cemigd <- read_rds("rds/sensi_cemig.rds") 
 
-dados_cemigd <- bind_rows(
-  dados_cemigd, dados_sens_cemigd
+dados_mg <- read_rds("rds/dados_mg.rds")
+
+dados_mg <- bind_rows(
+  dados_mg, dados_cemigd, dados_sens_cemigd
 )
 
 # sp:
 dados_sp <- read_rds("rds/dados_sp.rds")
 
+# go:
+dados_go <- read_rds("rds/dados_go.rds")
+
+#mt_ac_ro:
+dados_mt_ac_ro <- read_rds("rds/dados_mt_ac_ro.rds")
+
 
 # Dados SCPCB:
-
-dados_scpcb <- bind_rows(dados_cemigd, dados_sp)
+dados_scpcb <- bind_rows(
+  dados_mg, dados_sp, dados_go, dados_mt_ac_ro
+) %>% 
+  filter(
+    padrao_dia %in% c("dia_util", "domingo")
+  )
 
 
 
