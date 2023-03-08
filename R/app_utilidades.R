@@ -288,7 +288,7 @@ add_linha_pinst <- function(grafico, valor){
 
 
 
-##### Aquisição - Dados ####
+#### Aquisição - Dados ####
 
 #mg:
 dados_cemigd <- read_rds("rds/dados_cemigd.rds") 
@@ -302,23 +302,34 @@ dados_mg <- bind_rows(
 )
 
 # sp:
-dados_sp <- read_rds("rds/dados_sp.rds")
+# dados_sp <- read_rds("rds/dados_sp.rds")
+dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>% 
+  mutate(
+    agrupamento2 = str_to_upper(agrupamento2)
+  )
 
-# go:
+# go-mt:
 dados_go <- read_rds("rds/dados_go.rds")
 
-#mt_ac_ro:
 dados_mt_ac_ro <- read_rds("rds/dados_mt_ac_ro.rds")
+
+dados_go_mt <- bind_rows(
+  dados_go, dados_mt_ac_ro
+)
+
+# rj-es:
+dados_rj_es <- read_rds("rds/dados_rj_es.rds")
+
 
 
 # Dados SCPCB:
-dados_scpcb <- bind_rows(
-  dados_mg, dados_sp, dados_go, dados_mt_ac_ro
-) %>% 
-  filter(
-    padrao_dia %in% c("dia_util", "domingo")
-  )
-
+# dados_scpcb <- bind_rows(
+#   dados_mg, dados_sp, dados_go, dados_mt_ac_ro
+# ) %>% 
+#   filter(
+#     padrao_dia %in% c("dia_util", "domingo")
+#   )
+# 
 
 
 #potência instalada de mmgd por barramento:
