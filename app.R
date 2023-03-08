@@ -10,8 +10,15 @@ shinyOptions(cache = cachem::cache_disk(dir = "cache"))
 sidebar <- dashboardSidebar(width = 250,
                             sidebarMenu(
                               menuItem("Análise dos Dados de Carga", tabName = "analise_carga", startExpanded = TRUE,
-                                       menuSubItem("Comparativo Mensal", tabName = "analise_mensal"),
-                                       menuSubItem("Comparativo Mensal (LÍQ)", tabName = "analise_mensal_liq")
+                                       
+                                       menuSubItem("Comparativo Mensal MG", tabName = "analise_mensal"),
+                                       menuSubItem("Comparativo Mensal (LÍQ) MG", tabName = "analise_mensal_liq"),
+                                       menuSubItem("Comparativo Mensal SP", tabName = "analise_mensal_sp"),
+                                       menuSubItem("Comparativo Mensal (LÍQ) SP", tabName = "analise_mensal_liq_sp"),
+                                       menuSubItem("Comparativo Mensal GO-MT", tabName = "analise_mensal_go_mt"),
+                                       menuSubItem("Comparativo Mensal (LÍQ) GO-MT", tabName = "analise_mensal_liq_go_mt"),
+                                       menuSubItem("Comparativo Mensal RJ-ES", tabName = "analise_mensal_rj_es"),
+                                       menuSubItem("Comparativo Mensal (LÍQ) RJ-ES", tabName = "analise_mensal_liq_rj_es")
                                        
                               ),
                               menuItem("Ferramentas Gerais" , tabName = "ferramentas_gerais",
@@ -30,11 +37,38 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "analise_mensal",
             
-            modulosUI(namespace = "analise_mensal", dados_painel =  dados_scpcb, modelo = "normal")
+            modulosUI(namespace = "analise_mensal", dados_painel =  dados_mg, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq",
             
-            modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_scpcb, modelo = "liquido")
+            modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_mg, modelo = "liquido")
+            
+    ),
+    tabItem(tabName = "analise_mensal_sp",
+            
+            modulosUI(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal")
+    ),
+    tabItem(tabName = "analise_mensal_liq_sp",
+            
+            modulosUI(namespace = "analise_mensal_liq_sp", dados_painel = dados_sp, modelo = "liquido")
+            
+    ),
+    tabItem(tabName = "analise_mensal_go_mt",
+            
+            modulosUI(namespace = "analise_mensal_go_mt", dados_painel =  dados_go_mt, modelo = "normal")
+    ),
+    tabItem(tabName = "analise_mensal_liq_go_mt",
+            
+            modulosUI(namespace = "analise_mensal_liq_go_mt", dados_painel = dados_go_mt, modelo = "liquido")
+            
+    ),
+    tabItem(tabName = "analise_mensal_rj_es",
+            
+            modulosUI(namespace = "analise_mensal_rj_es", dados_painel =  dados_rj_es, modelo = "normal")
+    ),
+    tabItem(tabName = "analise_mensal_liq_rj_es",
+            
+            modulosUI(namespace = "analise_mensal_liq_rj_es", dados_painel = dados_rj_es, modelo = "liquido")
             
     ),
     
@@ -74,6 +108,12 @@ server <- function(input, output, session) {
   
   modulosServer(namespace = "analise_mensal", dados_painel =  dados_scpcb, modelo = "normal", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_scpcb, modelo = "liquido", pinst_mmgd = NULL)
+  modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq_sp", dados_painel =  dados_sp, modelo = "liquido", pinst_mmgd = NULL)
+  modulosServer(namespace = "analise_mensal_go_mt", dados_painel =  dados_go_mt, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq_go_mt", dados_painel =  dados_go_mt, modelo = "liquido", pinst_mmgd = NULL)
+  modulosServer(namespace = "analise_mensal_rj_es", dados_painel =  dados_rj_es, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq_rj_es", dados_painel =  dados_rj_es, modelo = "liquido", pinst_mmgd = NULL)
   
 }
 
