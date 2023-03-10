@@ -106,8 +106,8 @@ server <- function(input, output, session) {
   
   options(shiny.maxRequestSize = 50*1024^2)
   
-  modulosServer(namespace = "analise_mensal", dados_painel =  dados_scpcb, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_scpcb, modelo = "liquido", pinst_mmgd = NULL)
+  modulosServer(namespace = "analise_mensal", dados_painel =  dados_mg, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_mg, modelo = "liquido", pinst_mmgd = NULL)
   modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp, modelo = "normal", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_liq_sp", dados_painel =  dados_sp, modelo = "liquido", pinst_mmgd = NULL)
   modulosServer(namespace = "analise_mensal_go_mt", dados_painel =  dados_go_mt, modelo = "normal", pinst_mmgd = pinst_mmgd)
