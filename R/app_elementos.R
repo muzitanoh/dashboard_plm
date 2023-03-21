@@ -461,7 +461,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       
       dados_grafico <- dados_tratados()
       
-      grafico <- grafico_barras(dados_grafico) 
+      grafico <- grafico_barras(dados_grafico)
       
       
       if (modelo == "normal") {
@@ -487,7 +487,15 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         )
       )
       
-    })
+    }) %>%
+      bindCache(
+        particao_escolhido(),
+        ano_escolhido(),
+        patamar_escolhido(),
+        padrao_dia_escolhido(),
+        distribuidora_escolhido(),
+        agrupamento2_escolhido()
+      )
     
     
   })
