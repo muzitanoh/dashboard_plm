@@ -301,13 +301,6 @@ dados_mg <- bind_rows(
   dados_mg, dados_cemigd, dados_sens_cemigd
 )
 
-# sp:
-# dados_sp <- read_rds("rds/dados_sp.rds")
-dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>% 
-  mutate(
-    agrupamento2 = str_to_upper(agrupamento2)
-  )
-
 # go-mt:
 dados_go <- read_rds("rds/dados_go.rds")
 
@@ -317,9 +310,26 @@ dados_go_mt <- bind_rows(
   dados_go, dados_mt_ac_ro
 )
 
-# rj-es:
+# mg-go-mt:
+dados_mg_go_mt <- bind_rows(
+  dados_mg, dados_go_mt
+)
+
+
+
+
+# sp e rj-es:
+# dados_sp <- read_rds("rds/dados_sp.rds")
+dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>% 
+  mutate(
+    agrupamento2 = str_to_upper(agrupamento2)
+  )
+
 dados_rj_es <- read_rds("rds/dados_rj_es.rds")
 
+dados_sp_rj_es <- bind_rows(
+  dados_sp, dados_rj_es
+  )
 
 
 # Dados SCPCB:
