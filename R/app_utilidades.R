@@ -332,6 +332,12 @@ dados_sp_rj_es <- bind_rows(
   )
 
 
+
+# sul:
+dados_sul <- read_rds("rds/dados_sul.rds")
+
+
+
 # Dados SCPCB:
 # dados_scpcb <- bind_rows(
 #   dados_mg, dados_sp, dados_go, dados_mt_ac_ro
