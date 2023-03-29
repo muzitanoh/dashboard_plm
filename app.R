@@ -57,7 +57,7 @@ body <- dashboardBody(
     ),
     tabItem(tabName = "analise_mensal_liq_sul",
             
-            modulosUI(namespace = "analise_mensal_sul", dados_painel = dados_sul, modelo = "liquido")
+            modulosUI(namespace = "analise_mensal_liq_sul", dados_painel = dados_sul, modelo = "liquido")
             
     ),
 
