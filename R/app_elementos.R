@@ -455,47 +455,96 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
     
     
-    
-    output$grafico <- renderGirafe({
+    if(modelo == "normal") {
       
-      
-      dados_grafico <- dados_tratados()
-      
-      grafico <- grafico_barras(dados_grafico)
-      
-      
-      if (modelo == "normal") {
-          
-        particao_escolhido_local <- particao_escolhido()
-        pot_instalada_mmgd_local <- pot_instalada_mmgd()
+      output$grafico <- renderGirafe({
         
-        if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
+        
+        dados_grafico <- dados_tratados()
+        
+        grafico <- grafico_barras(dados_grafico)
+        
+        
+        if (modelo == "normal") {
           
-          grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
+          particao_escolhido_local <- particao_escolhido()
+          pot_instalada_mmgd_local <- pot_instalada_mmgd()
+          
+          if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
+            
+            grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
+          }
         }
-      }
-
-      
-      girafe(
-        code = {print(grafico)},
-        width_svg = 8,
-        height_svg = 4.5,
-        options = list(
-          opts_selection(type = "single", css = ""),
-          opts_tooltip(css = NULL, opacity = 0.9, delay_mouseover = 200, delay_mouseout = 500),
-          opts_hover(css = "")
+        
+        
+        girafe(
+          code = {print(grafico)},
+          width_svg = 8,
+          height_svg = 4.5,
+          options = list(
+            opts_selection(type = "single", css = ""),
+            opts_tooltip(css = NULL, opacity = 0.9, delay_mouseover = 200, delay_mouseout = 500),
+            opts_hover(css = "")
+          )
         )
-      )
+        
+      }) %>%
+        bindCache(
+          particao_escolhido(),
+          ano_escolhido(),
+          patamar_escolhido(),
+          padrao_dia_escolhido(),
+          distribuidora_escolhido(),
+          agrupamento2_escolhido()
+        )
       
-    }) %>%
-      bindCache(
-        particao_escolhido(),
-        ano_escolhido(),
-        patamar_escolhido(),
-        padrao_dia_escolhido(),
-        distribuidora_escolhido(),
-        agrupamento2_escolhido()
-      )
+    } else if(modelo == "liquido") {
+      
+      output$grafico <- renderGirafe({
+        
+        
+        dados_grafico <- dados_tratados()
+        
+        grafico <- grafico_barras(dados_grafico)
+        
+        
+        if (modelo == "normal") {
+          
+          particao_escolhido_local <- particao_escolhido()
+          pot_instalada_mmgd_local <- pot_instalada_mmgd()
+          
+          if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
+            
+            grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
+          }
+        }
+        
+        
+        girafe(
+          code = {print(grafico)},
+          width_svg = 8,
+          height_svg = 4.5,
+          options = list(
+            opts_selection(type = "single", css = ""),
+            opts_tooltip(css = NULL, opacity = 0.9, delay_mouseover = 200, delay_mouseout = 500),
+            opts_hover(css = "")
+          )
+        )
+        
+      }) %>%
+        bindCache(
+          ano_escolhido(),
+          patamar_escolhido(),
+          padrao_dia_escolhido(),
+          distribuidora_escolhido(),
+          agrupamento2_escolhido()
+        )
+      
+      
+    }
+
+    
+    
     
     
   })

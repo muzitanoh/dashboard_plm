@@ -5,9 +5,9 @@ account: hugo.muzitano
 server: prd-rstd-01
 hostUrl: http://prd-rstd-01/__api__
 appId: 47
-bundleId: 202
+bundleId: 237
 url: http://prd-rstd-01/dashboardplm/
-when: 1678473592.475
-lastSyncTime: 1678473592.47501
+when: 1680132720.71289
+lastSyncTime: 1680132720.71291
 asMultiple: FALSE
 asStatic: FALSE
