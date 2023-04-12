@@ -336,7 +336,8 @@ dados_sp_rj_es <- bind_rows(
 # sul:
 dados_sul <- read_rds("rds/dados_sul.rds")
 
-
+#nne:
+dados_nne <- read_rds("rds/dados_nne.rds")
 
 # Dados SCPCB:
 # dados_scpcb <- bind_rows(
