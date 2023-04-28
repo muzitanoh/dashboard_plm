@@ -150,7 +150,7 @@ icone_help <- icon(
 )
 
 verde_ons <- "#486018"
-paleta_graficos <- c("#B4DA68", "#FFBF65", "#00A5E3", "#FFDACC", "#747367", "#FF5768", "#CFF800", "#FF96C5")
+paleta_graficos <- c("#B4DA68", "#FFBF65", "#00A5E3", "#FFDACC", "#747367", "#FF5768", "#CFF800", "#FF96C5", "blue", "purple", "pink", "yellow", "red")
 
 fill_interactive_selected <- str_glue("fill:{verde_ons};stroke:black;")
 opts_interactive_hover <- str_glue("{fill_interactive_selected};cursor:pointer;")
