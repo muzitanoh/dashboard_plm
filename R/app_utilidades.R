@@ -263,23 +263,114 @@ grafico_barras <- function (dados_grafico, tooltip = tooltip) {
   return(grafico)
 }
 
-add_linha_pinst <- function(grafico, valor){
+grafico_barras_pinst_mmgd <- function(grafico, dados_pot_instalada_mmgd, tooltip = tooltip){
+  
+  dados_grafico$nome_mes <- factor(
+    dados_grafico$nome_mes,
+    levels = c("janeiro", "fevereiro", "marco", "abril", "maio", "junho",
+               "julho", "agosto", "setembro", "outubro", "novembro", "dezembro")
+  )
+ 
+  grafico <- 
+    ggplot(
+      dados_grafico, 
+      aes(
+        x = nome_mes, y = mw,
+        tooltip = tooltip,
+        data_id = nome_mes
+      )
+    ) + 
+    geom_bar_interactive(
+      stat = "identity", 
+      color = verde_ons,
+      aes(fill = ciclo), 
+      position = "dodge",
+      width = 0.7
+    ) +
+    geom_point_interactive(
+      aes(y = pinst), 
+      color = "black",
+      size = 2
+    ) +
+    geom_line_interactive(
+      aes(
+        y = pinst,
+        group = 1, 
+        data_id = nome_mes,
+        tooltip = str_glue(
+        "Pot. Instalada: {numero_br(pinst)} MW"
+        )
+      ),
+    size = 1.,
+    color = "black",
+    group = 1
+    ) +
+    xlab("Mês") + ylab("MW") +
+    # ggtitle(titulo_) +
+    theme_bw() +
+    theme_minimal() +
+    scale_color_manual(values = paleta_graficos) +
+    scale_fill_manual(values = paleta_graficos) +
+    # geom_text(
+    #   aes(
+    #     label = numero_br(mw), 
+    #     group = ciclo
+    #   ), 
+    #   position = position_dodge(0.8),
+    #   vjust = -0.3, size = 2
+    # ) +
+    labs(
+      y = "",
+      x = "",
+      color = "",
+      fill = ""
+    ) +
+    theme(
+      axis.line.x = element_blank(),
+      panel.grid.major.x = element_blank(),
+      axis.text.x = element_text(angle = 45, hjust = 1)
+      # panel.background = element_rect(fill = "#f5f5f5"),
+      # legend.key = element_rect(fill = "#f5f5f5"),
+      # axis.line.x = element_line(color = "#f5f5f5"),
+      # axis.line.y = element_line(color = "#f5f5f5")
+    ) +
+    scale_y_continuous(
+      labels = numero_br_mw
+    ) +
+    scale_x_discrete(
+      label = str_to_title
+    )
+  
+  
+  return(grafico)
+  
+}
+
+add_linha_pinst <- function(grafico, dados_pot_instalada_mmgd){
+  
+  dados_pot_instalada_mmgd$nome_mes <- factor(
+    dados_pot_instalada_mmgd$nome_mes,
+    levels = c("janeiro", "fevereiro", "marco", "abril", "maio", "junho",
+               "julho", "agosto", "setembro", "outubro", "novembro", "dezembro")
+  )
+  
+  
   
   grafico_ <- grafico +
     geom_line_interactive(
       aes(
-        x = nome_mes,
-        y = valor,
+        x = mes,
+        y = pinst,
         data_id = nome_mes,
         tooltip = str_glue(
-          "Pot. Instalada: {numero_br(valor)} MW"
+          "Pot. Instalada: {numero_br(pinst)} MW"
         )
       ),
       size = 1.,
       color = "black",
       group = 1
     )
-    
+  
   return(grafico_)
   
 }
@@ -371,29 +462,13 @@ dados_quadri <-
     dados_quadri_carga_sul
   )
 
-# dados_quadri_mmgd <- read_rds("rds/dados_quadri_mmgd.rds") %>% 
-#   mutate(
-#     tipo_gd = str_to_clean(tipo_gd)
-#   )
-
-# dados_quadri_mmgd_ <- dados_quadri_mmgd %>% 
-#   pivot_wider(
-#     id_cols = c("ano","mes", "n_barramento", "distribuidora"),
-#     names_from = "tipo_gd",
-#     values_from = "pinst_gd_mw"
-#   ) %>% 
-#   mutate(
-#     micro = if_else(is.na(micro), 0, micro),
-#     mini = if_else(is.na(mini), 0, mini)
-#   )
+dados_quadri_mmgd <- read_rds("rds/dados_quadri_mmgd.rds") %>% 
+  filter(
+    !is.na(n_barramento)
+  )
 
 
-
-
-
-
-
-
+pinst_mmgd <- dados_quadri_mmgd
 
 
 
