@@ -16,8 +16,7 @@ sidebar <- dashboardSidebar(width = 250,
                                        # menuSubItem("Comparativo Mensal SP-RJ-ES", tabName = "analise_mensal_sp"),
                                        # menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul"),
                                        menuSubItem("Comparativo Mensal NNE", tabName = "analise_mensal_nne"),
-                                       menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) QUADRI", tabName = "analise_mensal_liq_quadri")
+                                       menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri")
                                        
                               ),
                               menuItem("Ferramentas Gerais" , tabName = "ferramentas_gerais",
@@ -54,13 +53,7 @@ body <- dashboardBody(
             
             modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA")
     ),
-    tabItem(tabName = "analise_mensal_liq_quadri",
-            
-            modulosUIQ(namespace = "analise_mensal_liq_quadri", dados_painel = dados_quadri, modelo = "liquido")
-            
-    ),
 
-    
     
     tabItem(tabName = "analise_organon",
             
@@ -98,7 +91,6 @@ server <- function(input, output, session) {
   # modulosServer(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = pinst_mmgd)
-  modulosServerQ(namespace = "analise_mensal_liq_quadri", dados_painel =  dados_quadri, modelo = "liquido", pinst_mmgd = NULL)
   
 }
 
