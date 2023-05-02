@@ -38,48 +38,48 @@ body <- dashboardBody(
   theme_custom,
   tabItems(
     tabItem(tabName = "analise_mensal",
-            
+
             modulosUI(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq",
-            
+
             modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_mg_go_mt, modelo = "liquido")
-            
+
     ),
     tabItem(tabName = "analise_mensal_sp",
-            
+
             modulosUI(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq_sp",
-            
+
             modulosUI(namespace = "analise_mensal_liq_sp", dados_painel = dados_sp_rj_es, modelo = "liquido")
-            
+
     ),
     tabItem(tabName = "analise_mensal_sul",
-            
+
             modulosUI(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq_sul",
-            
+
             modulosUI(namespace = "analise_mensal_liq_sul", dados_painel = dados_sul, modelo = "liquido")
-            
+
     ),
     tabItem(tabName = "analise_mensal_nne",
-            
+
             modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq_nne",
-            
+
             modulosUI(namespace = "analise_mensal_liq_nne", dados_painel = dados_nne, modelo = "liquido")
-            
+
     ),
     tabItem(tabName = "analise_mensal_quadri",
             
-            modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal_quadri")
+            modulosUIQ(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal")
     ),
     tabItem(tabName = "analise_mensal_liq_quadri",
             
-            modulosUI(namespace = "analise_mensal_liq_quadri", dados_painel = dados_quadri, modelo = "liquido_quadri")
+            modulosUIQ(namespace = "analise_mensal_liq_quadri", dados_painel = dados_quadri, modelo = "liquido")
             
     ),
 
@@ -124,8 +124,8 @@ server <- function(input, output, session) {
   modulosServer(namespace = "analise_mensal_liq_sul", dados_painel =  dados_sul, modelo = "liquido", pinst_mmgd = NULL)
   modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "normal", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_liq_nne", dados_painel =  dados_nne, modelo = "liquido", pinst_mmgd = NULL)
-  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal_quadri", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq_quadri", dados_painel =  dados_quadri, modelo = "liquido_quadri", pinst_mmgd = NULL)
+  modulosServerQ(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  modulosServerQ(namespace = "analise_mensal_liq_quadri", dados_painel =  dados_quadri, modelo = "liquido", pinst_mmgd = NULL)
   
 }
 

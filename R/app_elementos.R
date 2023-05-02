@@ -223,6 +223,89 @@ modulosUIF <- function(namespace, modelo){
   
 }
 
+modulosUIQ <- function(namespace, dados_painel, modelo){
+  
+  select_particao <- selectInput(
+    inputId = NS(namespace, "escolhe_particao"),
+    label = "Grandeza:",
+    choices = c("Carga", "Carga MMGD", "Carga Total", "Geração Tipo IIB e/ou III", "Geração MMGD", "Geração Total"),
+    selected = "Carga Total",
+    multiple = FALSE
+  )
+  
+  select_padrao_dia <- selectInput(
+    inputId = NS(namespace, "escolhe_padrao_dia"),
+    label = "Padrão Dia:", 
+    choices = str_to_better(sort(unique(dados_painel$padrao_dia))),
+    selected = str_to_better(sort(unique(dados_painel$padrao_dia)))[1],
+    multiple = FALSE
+  )
+  
+  select_patamar <- selectInput(
+    inputId = NS(namespace, "escolhe_patamar"),
+    label = "Patamar:", 
+    choices = str_to_better(sort(unique(dados_painel$patamar))),
+    selected = str_to_better(sort(unique(dados_painel$patamar)))[1],
+    multiple = FALSE
+  )
+  
+  select_distribuidora <- selectInput(
+    inputId = NS(namespace, "escolhe_distribuidora"),
+    label = "Distribuidora:", 
+    choices = sort(unique(dados_painel$distribuidora)),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
+  select_agrupamento2 <- selectInput(
+    inputId = NS(namespace, "escolhe_agrupamento2"),
+    label = "Região:",
+    choices = str_to_title(sort(unique(dados_painel$agrupamento2))),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
+  
+  
+  
+  if (modelo == "normal") {
+    coluna_filtros <- verticalLayout(
+      select_particao, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr()
+    )
+  } else if (modelo == "liquido") {
+    coluna_filtros <- verticalLayout(
+      select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr()
+    )
+  }
+  
+  
+  painel_filtros <- wellPanel(
+    tags$div("", class = "titulo_box"),
+    coluna_filtros
+  )
+  
+  
+  grafico <- wellPanel(
+    girafeOutput(NS(namespace, "grafico"), height = "65vh")
+  )
+  
+  
+  splitLayout(
+    style = "overflow:hidden;",
+    cellWidths = c("23%", "77%"),
+    painel_filtros,
+    grafico
+  )
+  
+  # tagList(
+  #   wellPanel(faixa_filtros),
+  #   grafico
+  # )
+  
+  
+  
+}
+
 
 modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
   
@@ -698,6 +781,335 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       
     }
 
+    
+    
+    
+    
+  })
+  
+  
+}
+
+
+modulosServerQ <- function(namespace, dados_painel, modelo, pinst_mmgd){
+  
+  
+  moduleServer(namespace, function(input, output, session){
+    
+    
+    # Escolhas do UI:
+    particao_escolhido <- reactive({
+      if (input$escolhe_particao == "Carga Total") {
+        c("carga", "carga_mmgd")
+      } else if (input$escolhe_particao == "Carga") {
+        "carga"
+      } else if (input$escolhe_particao == "Carga MMGD") {
+        "carga_mmgd"
+      } else if (input$escolhe_particao == "Geração Total") {
+        c("ger_tipo_iib_ou_iii", "ger_mmgd")
+      } else if (input$escolhe_particao == "Geração Tipo IIB e/ou III") {
+        "ger_tipo_iib_ou_iii"
+      } else{
+        "ger_mmgd"
+      }
+    })
+    
+    patamar_escolhido <- reactive({
+      str_to_clean(input$escolhe_patamar)
+    })
+    
+    padrao_dia_escolhido <- reactive({
+      str_to_clean(input$escolhe_padrao_dia)
+    })
+    
+    distribuidora_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_distribuidora)) {
+        sort(unique(dados_painel$distribuidora))
+      } else{
+        input$escolhe_distribuidora
+      }
+    })
+    
+    agrupamento2_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_agrupamento2)) {
+        sort(unique(dados_painel$agrupamento2))
+      } else{
+        str_to_upper(input$escolhe_agrupamento2)
+      }
+    })
+    
+    
+    
+    
+    
+    # Dados do UI reatvios:
+    observeEvent(input$escolhe_padrao_dia, {
+      
+      padrao_dia_escolhido_local <- padrao_dia_escolhido()
+      
+      dados_filtrados <- filter(dados_painel, padrao_dia %in% padrao_dia_escolhido_local)
+      
+      updateSelectInput(
+        # session = session,
+        inputId = "escolhe_patamar",
+        choices = str_to_better(sort(unique(dados_filtrados$patamar))),
+        selected = str_to_better(sort(unique(dados_filtrados$patamar)))[1]
+      )
+    })
+    
+    
+    observeEvent(input$escolhe_distribuidora, {
+      
+      distribuidora_escolhido_local <- distribuidora_escolhido()
+      
+      dados_filtrados <- filter(dados_painel, distribuidora %in% distribuidora_escolhido_local)
+      
+      updateSelectInput(
+        # session = session,
+        inputId = "escolhe_agrupamento2",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
+        selected = NULL
+      )
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Tratamento dos dados que serão apresentados:
+    if (modelo == "normal") {
+      
+      dados_tratados <- reactive({
+        
+        particao_escolhido_local <- particao_escolhido()
+        patamar_escolhido_local <- patamar_escolhido()
+        padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        
+        dados <- dados_painel %>% 
+          filter(
+            particao %in% particao_escolhido_local,
+            patamar == patamar_escolhido_local,
+            padrao_dia == padrao_dia_escolhido_local,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
+            agrupamento2 %in% agrupamento2_escolhido_local
+          ) %>%
+          group_by(
+            nome_mes = mes, ciclo
+          ) %>% 
+          summarise(
+            mw = sum(mw), .groups = "keep"
+          ) %>% 
+          ungroup() %>% 
+          left_join(
+            dim_mes, by = "nome_mes"
+          ) %>% 
+          arrange(
+            ciclo
+          ) %>% 
+          arrange(
+            n_mes
+          ) %>% 
+          mutate(
+            tooltip = str_glue(
+              # "{numero_br(mw)} MW"
+              "Ciclo: {ciclo}
+          {numero_br(mw)} MW"
+            )
+          )
+        
+      })
+      
+      pot_instalada_mmgd <- reactive({
+        
+
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        
+        dados_dim <- dados_painel %>%
+          select(
+            n_barramento, distribuidora, agrupamento1, agrupamento2
+          ) %>% 
+          distinct_all()
+        
+        
+        pinst <- pinst_mmgd %>%
+          left_join(
+            dados_dim, by = "n_barramento"
+          ) %>%
+          filter(
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
+            agrupamento2 %in% agrupamento2_escolhido_local
+          ) %>%
+          summarise(
+            pinst = sum(pinst), .groups = "keep"
+          ) %>%
+          pull()
+        
+        pinst
+        
+      })
+      
+      
+    } else if (modelo == "liquido") {
+      
+      dados_tratados <- reactive({
+        
+        patamar_escolhido_local <- patamar_escolhido()
+        padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        
+        dados <- dados_painel %>% 
+          filter(
+            patamar == patamar_escolhido_local,
+            padrao_dia == padrao_dia_escolhido_local,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
+            agrupamento2 %in% agrupamento2_escolhido_local
+          ) %>%
+          mutate(
+            particao = if_else(str_detect(particao, "^carg"), "carga_total", particao),
+            particao = if_else(str_detect(particao, "^ger"), "ger_total", particao)
+          ) %>% 
+          group_by(
+            particao, nome_mes = mes, ciclo
+          ) %>% 
+          summarise(
+            mw = sum(mw), .groups = "keep"
+          ) %>% 
+          ungroup() %>% 
+          pivot_wider(
+            values_from = "mw",
+            names_from = "particao"
+          ) %>% 
+          mutate(
+            mw = carga_total - ger_total
+          ) %>% 
+          left_join(
+            dim_mes, by = "nome_mes"
+          ) %>% 
+          arrange(
+            ciclo
+          ) %>% 
+          arrange(
+            n_mes
+          ) %>% 
+          mutate(
+            tooltip = str_glue(
+              "Ciclo: {ciclo}
+            {numero_br(mw)} MW"
+            )
+          )
+        
+      })
+      
+    } 
+    
+    
+    
+    
+    
+    
+    
+    # Gráficos  
+    
+    
+    if(modelo == "normal") {
+      
+      output$grafico <- renderGirafe({
+        
+        
+        dados_grafico <- dados_tratados()
+        
+        grafico <- grafico_barras(dados_grafico)
+        
+        
+        if (modelo == "normal") {
+          
+          particao_escolhido_local <- particao_escolhido()
+          pot_instalada_mmgd_local <- pot_instalada_mmgd()
+          
+          if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
+            
+            grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
+          }
+        }
+        
+        
+        girafe(
+          code = {print(grafico)},
+          width_svg = 8,
+          height_svg = 4.5,
+          options = list(
+            opts_selection(type = "single", css = ""),
+            opts_tooltip(css = NULL, opacity = 0.9, delay_mouseover = 200, delay_mouseout = 500),
+            opts_hover(css = "")
+          )
+        )
+        
+      }) %>%
+        bindCache(
+          particao_escolhido(),
+          patamar_escolhido(),
+          padrao_dia_escolhido(),
+          distribuidora_escolhido(),
+          agrupamento2_escolhido()
+        )
+      
+    } else if(modelo == "liquido") {
+      
+      output$grafico <- renderGirafe({
+        
+        
+        dados_grafico <- dados_tratados()
+        
+        grafico <- grafico_barras(dados_grafico)
+        
+        
+        if (modelo == "normal") {
+          
+          particao_escolhido_local <- particao_escolhido()
+          pot_instalada_mmgd_local <- pot_instalada_mmgd()
+          
+          if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
+            
+            grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
+          }
+        }
+        
+        
+        girafe(
+          code = {print(grafico)},
+          width_svg = 8,
+          height_svg = 4.5,
+          options = list(
+            opts_selection(type = "single", css = ""),
+            opts_tooltip(css = NULL, opacity = 0.9, delay_mouseover = 200, delay_mouseout = 500),
+            opts_hover(css = "")
+          )
+        )
+        
+      }) %>%
+        bindCache(
+          patamar_escolhido(),
+          padrao_dia_escolhido(),
+          distribuidora_escolhido(),
+          agrupamento2_escolhido()
+        )
+      
+      
+    }
+    
     
     
     
