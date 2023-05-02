@@ -151,6 +151,8 @@ icone_help <- icon(
 
 verde_ons <- "#486018"
 paleta_graficos <- c("#B4DA68", "#FFBF65", "#00A5E3", "#FFDACC", "#747367", "#FF5768", "#CFF800", "#FF96C5", "blue", "purple", "pink", "yellow", "red")
+fundo_app <- "#f5f5f5"
+grid_grafico <- "#D5D5D5"
 
 fill_interactive_selected <- str_glue("fill:{verde_ons};stroke:black;")
 opts_interactive_hover <- str_glue("{fill_interactive_selected};cursor:pointer;")
@@ -257,13 +259,22 @@ grafico_barras <- function (dados_grafico, tooltip = tooltip) {
     ) +
     scale_x_discrete(
       label = str_to_title
-    )
+    ) +
+    theme(
+      plot.background = element_rect(fill = fundo_app),
+      panel.background = element_rect(fill = fundo_app),
+      legend.background = element_rect(fill = fundo_app),
+      panel.border = element_blank(),
+      legend.box = "none",
+      rect = element_rect(fill = fundo_app, color = NA),
+      panel.grid = element_line(color = grid_grafico)
+    ) 
   
   
   return(grafico)
 }
 
-grafico_barras_pinst_mmgd <- function(grafico, dados_pot_instalada_mmgd, tooltip = tooltip){
+grafico_barras_pinst_mmgd <- function(dados_grafico){
   
   dados_grafico$nome_mes <- factor(
     dados_grafico$nome_mes,
@@ -287,23 +298,29 @@ grafico_barras_pinst_mmgd <- function(grafico, dados_pot_instalada_mmgd, tooltip
       position = "dodge",
       width = 0.7
     ) +
-    geom_point_interactive(
-      aes(y = pinst), 
-      color = "black",
-      size = 2
-    ) +
-    geom_line_interactive(
+    geom_line(
       aes(
         y = pinst,
-        group = 1, 
+        group = 1,
+        lineend = "round"
+      ),
+      group = 1,
+      color = "#494949",
+      size = 1.,
+      alpha = .7
+    ) +
+    geom_point_interactive(
+      aes(
+        y = pinst,
         data_id = nome_mes,
         tooltip = str_glue(
-        "Pot. Instalada: {numero_br(pinst)} MW"
+          "Ano Referência: 2023
+           Mês: {str_to_title(nome_mes)}
+           P. Inst. MMGD: {numero_br(pinst)} MW"
         )
-      ),
-    size = 1.,
-    color = "black",
-    group = 1
+      ), 
+      color = "#3D3D3D",
+      size = 2.
     ) +
     xlab("Mês") + ylab("MW") +
     # ggtitle(titulo_) +
@@ -339,7 +356,16 @@ grafico_barras_pinst_mmgd <- function(grafico, dados_pot_instalada_mmgd, tooltip
     ) +
     scale_x_discrete(
       label = str_to_title
-    )
+    ) +
+    theme(
+      plot.background = element_rect(fill = fundo_app),
+      panel.background = element_rect(fill = fundo_app),
+      legend.background = element_rect(fill = fundo_app),
+      panel.border = element_blank(),
+      legend.box = "none",
+      rect = element_rect(fill = fundo_app, color = NA),
+      panel.grid = element_line(color = grid_grafico) 
+    ) 
   
   
   return(grafico)
@@ -467,8 +493,6 @@ dados_quadri_mmgd <- read_rds("rds/dados_quadri_mmgd.rds") %>%
     !is.na(n_barramento)
   )
 
-
-pinst_mmgd <- dados_quadri_mmgd
 
 
 

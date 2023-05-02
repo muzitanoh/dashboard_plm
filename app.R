@@ -90,7 +90,7 @@ server <- function(input, output, session) {
   # modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = dados_quadri_mmgd)
   
 }
 

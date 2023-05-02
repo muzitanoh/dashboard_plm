@@ -448,10 +448,6 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       
       if (modelo == "QUA") {
         
-        particao_escolhido_local <- particao_escolhido()
-        ano_escolhido_local <- ano_escolhido()
-        patamar_escolhido_local <- patamar_escolhido()
-        padrao_dia_escolhido_local <- padrao_dia_escolhido()
         subsistema_escolhido_local <- subsistema_escolhido()
         uf_escolhido_local <- uf_escolhido()
         distribuidora_escolhido_local <- distribuidora_escolhido()
@@ -474,9 +470,6 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         
         dados_filtrados <- dados_agrupados %>%
           filter(
-            particao %in% particao_escolhido_local,
-            patamar == patamar_escolhido_local,
-            padrao_dia == padrao_dia_escolhido_local,
             subsistema %in% subsistema_escolhido_local,
             uf %in% uf_escolhido_local,
             distribuidora %in% distribuidora_escolhido_local,
@@ -489,7 +482,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
             ano == 2023
           ) %>% 
           group_by(
-            mes, nome_mes
+            mes
           ) %>% 
           summarise(
             pinst = sum(pinst_gd_mw, na.rm = TRUE), .groups = "keep"
@@ -502,7 +495,10 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         
         dados
       } else {
-        NULL
+        dados <- tibble(
+          mes = c(1,2,3,4,5,6,7,8,9,10,11,12),
+          pinst = c(0,0,0,0,0,0,0,0,0,0,0,0)
+        )
       }
 
 
@@ -550,15 +546,22 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         grafico <- grafico_barras(dados_grafico)
         
         
-        # if (input$escolhe_particao == "Geração MMGD") {
-        # 
-        #   dados_pot_instalada_mmgd <- pot_instalada_mmgd()
-        # 
-        #   if (!is.null(dados_pot_instalada_mmgd)) {
-        # 
-        #     grafico <- grafico_barras_pinst_mmgd(dados_grafico, dados_pot_instalada_mmgd)
-        #   }
-        # }
+        if (input$escolhe_particao == "Geração MMGD") {
+
+          dados_pot_instalada_mmgd <- pot_instalada_mmgd()
+
+          if (!is.null(dados_pot_instalada_mmgd)) {
+            
+            dados_grafico_pot_inst <- 
+              left_join(
+                dados_grafico,
+                dados_pot_instalada_mmgd,
+                by = c("n_mes" = "mes")
+              )
+
+            grafico <- grafico_barras_pinst_mmgd(dados_grafico_pot_inst)
+          }
+        }
         
 
         girafe(
