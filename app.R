@@ -11,14 +11,10 @@ sidebar <- dashboardSidebar(width = 250,
                             sidebarMenu(
                               menuItem("Análise dos Dados de Carga", tabName = "analise_carga", startExpanded = TRUE,
                                        
-                                       menuSubItem("Comparativo Mensal MG-GO_MT", tabName = "analise_mensal"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) MG-GO-MT", tabName = "analise_mensal_liq"),
-                                       menuSubItem("Comparativo Mensal SP-RJ-ES", tabName = "analise_mensal_sp"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) SP-RJ-ES", tabName = "analise_mensal_liq_sp"),
-                                       menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) SUL", tabName = "analise_mensal_liq_sul"),
+                                       # menuSubItem("Comparativo Mensal MG-GO_MT", tabName = "analise_mensal"),
+                                       # menuSubItem("Comparativo Mensal SP-RJ-ES", tabName = "analise_mensal_sp"),
+                                       # menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul"),
                                        menuSubItem("Comparativo Mensal NNE", tabName = "analise_mensal_nne"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) NNE", tabName = "analise_mensal_liq_nne"),
                                        menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri"),
                                        menuSubItem("Comparativo Mensal (LÍQ) QUADRI", tabName = "analise_mensal_liq_quadri")
                                        
@@ -37,45 +33,25 @@ body <- dashboardBody(
   use_waiter(),
   theme_custom,
   tabItems(
-    tabItem(tabName = "analise_mensal",
-
-            modulosUI(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "normal")
-    ),
-    tabItem(tabName = "analise_mensal_liq",
-
-            modulosUI(namespace = "analise_mensal_liq", dados_painel = dados_mg_go_mt, modelo = "liquido")
-
-    ),
-    tabItem(tabName = "analise_mensal_sp",
-
-            modulosUI(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "normal")
-    ),
-    tabItem(tabName = "analise_mensal_liq_sp",
-
-            modulosUI(namespace = "analise_mensal_liq_sp", dados_painel = dados_sp_rj_es, modelo = "liquido")
-
-    ),
-    tabItem(tabName = "analise_mensal_sul",
-
-            modulosUI(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "normal")
-    ),
-    tabItem(tabName = "analise_mensal_liq_sul",
-
-            modulosUI(namespace = "analise_mensal_liq_sul", dados_painel = dados_sul, modelo = "liquido")
-
-    ),
+    # tabItem(tabName = "analise_mensal",
+    # 
+    #         modulosUI(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "PAR")
+    # ),
+    # tabItem(tabName = "analise_mensal_sp",
+    # 
+    #         modulosUI(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "PAR")
+    # ),
+    # tabItem(tabName = "analise_mensal_sul",
+    # 
+    #         modulosUI(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR")
+    # ),
     tabItem(tabName = "analise_mensal_nne",
 
-            modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "normal")
-    ),
-    tabItem(tabName = "analise_mensal_liq_nne",
-
-            modulosUI(namespace = "analise_mensal_liq_nne", dados_painel = dados_nne, modelo = "liquido")
-
+            modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR")
     ),
     tabItem(tabName = "analise_mensal_quadri",
             
-            modulosUIQ(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal")
+            modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA")
     ),
     tabItem(tabName = "analise_mensal_liq_quadri",
             
@@ -116,15 +92,11 @@ server <- function(input, output, session) {
   
   options(shiny.maxRequestSize = 50*1024^2)
   
-  modulosServer(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq", dados_painel =  dados_mg_go_mt, modelo = "liquido", pinst_mmgd = NULL)
-  modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq_sp", dados_painel =  dados_sp_rj_es, modelo = "liquido", pinst_mmgd = NULL)
-  modulosServer(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq_sul", dados_painel =  dados_sul, modelo = "liquido", pinst_mmgd = NULL)
-  modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "normal", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_liq_nne", dados_painel =  dados_nne, modelo = "liquido", pinst_mmgd = NULL)
-  modulosServerQ(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal", pinst_mmgd = pinst_mmgd)
+  # modulosServer(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "PAR", pinst_mmgd = pinst_mmgd)
+  # modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "PAR", pinst_mmgd = pinst_mmgd)
+  # modulosServer(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = pinst_mmgd)
   modulosServerQ(namespace = "analise_mensal_liq_quadri", dados_painel =  dados_quadri, modelo = "liquido", pinst_mmgd = NULL)
   
 }
