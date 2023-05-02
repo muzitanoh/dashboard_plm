@@ -3,7 +3,8 @@
 #### ELEMENTOS INTERFACE ####
 
 source("R/app_utilidades.R", encoding = "UTF-8")
-source("R/app_elementos.R", encoding = "UTF-8")
+source("R/app_elementos_carga.R", encoding = "UTF-8")
+source("R/app_elementos_ferramentas.R", encoding = "UTF-8")
 
 shinyOptions(cache = cachem::cache_disk(dir = "cache"))
 
