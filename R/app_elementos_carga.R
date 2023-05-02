@@ -37,6 +37,22 @@ modulosUI <- function(namespace, dados_painel, modelo){
     multiple = FALSE
   )
   
+  select_subsistema <- selectInput(
+    inputId = NS(namespace, "escolhe_subsistema"),
+    label = "Subsistema:",
+    choices = sort(unique(dados_painel$subsistema)),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
+  select_uf <- selectInput(
+    inputId = NS(namespace, "escolhe_uf"),
+    label = "UF:",
+    choices = sort(unique(dados_painel$uf)),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
   select_distribuidora <- selectInput(
     inputId = NS(namespace, "escolhe_distribuidora"),
     label = "Distribuidora:", 
@@ -49,6 +65,14 @@ modulosUI <- function(namespace, dados_painel, modelo){
     inputId = NS(namespace, "escolhe_agrupamento2"),
     label = "Região:",
     choices = str_to_title(sort(unique(dados_painel$agrupamento2))),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
+  select_n_barramento <- selectInput(
+    inputId = NS(namespace, "escolhe_n_barramento"),
+    label = "Barra:",
+    choices = sort(unique(dados_painel$n_barramento)),
     selected = NULL,
     multiple = TRUE
   )
@@ -70,7 +94,7 @@ modulosUI <- function(namespace, dados_painel, modelo){
     )
   } else if (modelo == "QUA") {
     coluna_filtros <- verticalLayout(
-      select_particao, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr()
+      select_particao, select_padrao_dia, select_patamar, select_subsistema, select_uf, select_distribuidora, select_agrupamento2, select_n_barramento
     )
   } 
   
@@ -110,7 +134,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
   moduleServer(namespace, function(input, output, session){
     
 
-    # Escolhas do UI:
+    #### React UI ####
     particao_escolhido <- reactive({
       if (input$escolhe_particao == "Carga Total") {
         c("carga", "carga_mmgd")
@@ -141,6 +165,24 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       str_to_clean(input$escolhe_padrao_dia)
     })
     
+    subsistema_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_subsistema)) {
+        sort(unique(dados_painel$subsistema))
+      } else{
+        input$escolhe_subsistema
+      }
+    })
+    
+    uf_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_uf)) {
+        sort(unique(dados_painel$uf))
+      } else{
+        input$escolhe_uf
+      }
+    })
+    
     distribuidora_escolhido <- reactive({
       
       if (is.null(input$escolhe_distribuidora)) {
@@ -159,10 +201,19 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       }
     })
     
+    n_barramento_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_n_barramento)) {
+        sort(unique(dados_painel$n_barramento))
+      } else{
+        input$escolhe_n_barramento
+      }
+    })
     
     
     
-  #### React UI ####
+    
+  #### Observe UI ####
     observeEvent(input$escolhe_padrao_dia, {
       
       padrao_dia_escolhido_local <- padrao_dia_escolhido()
@@ -178,6 +229,66 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     })
     
     
+    ###
+    
+    observeEvent(input$escolhe_subsistema, {
+      
+      subsistema_escolhido_local <- subsistema_escolhido()
+      
+      dados_filtrados <- filter(dados_painel, subsistema %in% subsistema_escolhido_local)
+      
+      updateSelectInput(
+        # session = session,
+        inputId = "escolhe_uf",
+        choices = sort(unique(dados_filtrados$uf)),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_distribuidora",
+        choices = sort(unique(dados_filtrados$distribuidora)),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_agrupamento2",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_n_barramento",
+        choices = sort(unique(dados_filtrados$n_barramento)),
+        selected = NULL
+      )
+    })
+    
+
+    observeEvent(input$escolhe_uf, {
+      
+      uf_escolhido_local <- uf_escolhido()
+      
+      dados_filtrados <- filter(dados_painel, uf %in% uf_escolhido_local)
+      
+      updateSelectInput(
+        inputId = "escolhe_distribuidora",
+        choices = sort(unique(dados_filtrados$distribuidora)),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_agrupamento2",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_n_barramento",
+        choices = sort(unique(dados_filtrados$n_barramento)),
+        selected = NULL
+      )
+    })
+    
     observeEvent(input$escolhe_distribuidora, {
       
       distribuidora_escolhido_local <- distribuidora_escolhido()
@@ -185,13 +296,30 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       dados_filtrados <- filter(dados_painel, distribuidora %in% distribuidora_escolhido_local)
       
       updateSelectInput(
-        # session = session,
         inputId = "escolhe_agrupamento2",
         choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
         selected = NULL
       )
+      
+      updateSelectInput(
+        inputId = "escolhe_n_barramento",
+        choices = sort(unique(dados_filtrados$n_barramento)),
+        selected = NULL
+      )
     })
     
+    observeEvent(input$escolhe_agrupamento2, {
+      
+      agrupamento2_escolhido_local <- agrupamento2_escolhido()
+      
+      dados_filtrados <- filter(dados_painel, agrupamento2 %in% agrupamento2_escolhido_local)
+      
+      updateSelectInput(
+        inputId = "escolhe_n_barramento",
+        choices = sort(unique(dados_filtrados$n_barramento)),
+        selected = NULL
+      )
+    })
     
     
     
@@ -226,16 +354,22 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         ano_escolhido_local <- ano_escolhido()
         patamar_escolhido_local <- patamar_escolhido()
         padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        subsistema_escolhido_local <- subsistema_escolhido()
+        uf_escolhido_local <- uf_escolhido()
         distribuidora_escolhido_local <- distribuidora_escolhido()
         agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        n_barramento_escolhido_local <- n_barramento_escolhido()
         
         dados_filtrados <- dados_painel %>% 
           filter(
             particao %in% particao_escolhido_local,
             patamar == patamar_escolhido_local,
             padrao_dia == padrao_dia_escolhido_local,
+            subsistema %in% subsistema_escolhido_local,
+            uf %in% uf_escolhido_local,
             distribuidora %in% distribuidora_escolhido_local,
-            agrupamento2 %in% agrupamento2_escolhido_local
+            agrupamento2 %in% agrupamento2_escolhido_local,
+            n_barramento %in% n_barramento_escolhido_local
           ) 
       }
     
@@ -346,7 +480,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
     
     
-  #### Gráficos ####  
+  #### Gráficos + Bind ####  
 
     # if (modelo == "PAR"|modelo == "normal_quadri") {
     #   
@@ -412,8 +546,11 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
           particao_escolhido(),
           patamar_escolhido(),
           padrao_dia_escolhido(),
+          subsistema_escolhido(),
+          uf_escolhido(),
           distribuidora_escolhido(),
-          agrupamento2_escolhido()
+          agrupamento2_escolhido(),
+          n_barramento_escolhido()
         )
       
       

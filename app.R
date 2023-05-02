@@ -15,7 +15,7 @@ sidebar <- dashboardSidebar(width = 250,
                                        # menuSubItem("Comparativo Mensal MG-GO_MT", tabName = "analise_mensal"),
                                        # menuSubItem("Comparativo Mensal SP-RJ-ES", tabName = "analise_mensal_sp"),
                                        # menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul"),
-                                       menuSubItem("Comparativo Mensal NNE", tabName = "analise_mensal_nne"),
+                                       # menuSubItem("Comparativo Mensal NNE", tabName = "analise_mensal_nne"),
                                        menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri")
                                        
                               ),
@@ -45,10 +45,10 @@ body <- dashboardBody(
     # 
     #         modulosUI(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR")
     # ),
-    tabItem(tabName = "analise_mensal_nne",
-
-            modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR")
-    ),
+    # tabItem(tabName = "analise_mensal_nne",
+    # 
+    #         modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR")
+    # ),
     tabItem(tabName = "analise_mensal_quadri",
             
             modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA")
@@ -71,7 +71,7 @@ body <- dashboardBody(
 
 
 ui <- dashboardPage(
-  title = "PLM | MG",
+  title = "PL | SPCB",
   dashboardHeader(
     
     title = HTML('<a href="https://www.ons.org.br/"> <img class=logo-epe src=logo_ons.png width="65" > </a> <b> PLM | MG </b>'),
@@ -89,7 +89,7 @@ server <- function(input, output, session) {
   # modulosServer(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
+  # modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = pinst_mmgd)
   
 }
