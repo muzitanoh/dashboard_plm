@@ -74,7 +74,7 @@ ui <- dashboardPage(
   title = "PL | SPCB",
   dashboardHeader(
     
-    title = HTML('<a href="https://www.ons.org.br/"> <img class=logo-epe src=logo_ons.png width="65" > </a> <b> PLM | MG </b>'),
+    title = HTML('<a href="https://www.ons.org.br/"> <img class=logo-epe src=logo_ons.png width="65" > </a> <b> PL | SCPCB </b>'),
     titleWidth = 270
   ),
   sidebar,

@@ -135,6 +135,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
 
     #### React UI ####
+    
     particao_escolhido <- reactive({
       if (input$escolhe_particao == "Carga Total") {
         c("carga", "carga_mmgd")
@@ -213,7 +214,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
     
     
-  #### Observe UI ####
+    #### Observe UI ####
+    
     observeEvent(input$escolhe_padrao_dia, {
       
       padrao_dia_escolhido_local <- padrao_dia_escolhido()
@@ -228,8 +230,6 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       )
     })
     
-    
-    ###
     
     observeEvent(input$escolhe_subsistema, {
       
@@ -262,7 +262,6 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         selected = NULL
       )
     })
-    
 
     observeEvent(input$escolhe_uf, {
       
@@ -327,7 +326,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
     
     #### Tratamento #### 
-        dados_tratados <- reactive({
+    
+    dados_tratados <- reactive({
         
       if (modelo == "PAR") {
         
@@ -444,55 +444,73 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         
       })
       
-    # pot_instalada_mmgd <- reactive({
-    # 
-    #     ano_escolhido_local <- ano_escolhido()
-    #     distribuidora_escolhido_local <- distribuidora_escolhido()
-    #     agrupamento2_escolhido_local <- agrupamento2_escolhido()
-    #     
-    #     dados_dim <- dados_painel %>%
-    #       select(
-    #         n_barramento, distribuidora, agrupamento1, agrupamento2
-    #       ) %>% 
-    #       distinct_all()
-    #     
-    #     
-    #     pinst <- pinst_mmgd %>%
-    #       left_join(
-    #         dados_dim, by = "n_barramento"
-    #       ) %>%
-    #       filter(
-    #         ano == ano_escolhido_local,
-    #         distribuidora %in% distribuidora_escolhido_local,
-    #         # agrupamento1 %in% agrupamento1_,
-    #         agrupamento2 %in% agrupamento2_escolhido_local
-    #       ) %>%
-    #       summarise(
-    #         pinst = sum(pinst), .groups = "keep"
-    #       ) %>%
-    #       pull()
-    #     
-    #     pinst
-    #     
-    #   })
-
-    
-    
-    
-    
-  #### Gráficos + Bind ####  
-
-    # if (modelo == "PAR"|modelo == "normal_quadri") {
-    #   
-    #   particao_escolhido_local <- particao_escolhido()
-    #   pot_instalada_mmgd_local <- pot_instalada_mmgd()
-    #   
-    #   if (particao_escolhido_local[1] == "ger_mmgd" & pot_instalada_mmgd_local != 0) {
-    #     
-    #     grafico <- add_linha_pinst(grafico, pot_instalada_mmgd_local)
-    #   }
-    # }
+    pot_instalada_mmgd <- reactive({
       
+      if (modelo == "QUA") {
+        
+        particao_escolhido_local <- particao_escolhido()
+        ano_escolhido_local <- ano_escolhido()
+        patamar_escolhido_local <- patamar_escolhido()
+        padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        subsistema_escolhido_local <- subsistema_escolhido()
+        uf_escolhido_local <- uf_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        n_barramento_escolhido_local <- n_barramento_escolhido()
+        
+        dados_dim <- dados_painel %>%
+          select(
+            n_barramento, subsistema, uf, distribuidora, agrupamento1, agrupamento2
+          ) %>%
+          distinct_all()
+        
+        dados_agrupados <- pinst_mmgd %>% 
+          left_join(
+            dados_dim, by = c("n_barramento", "distribuidora")
+          ) %>% 
+          left_join(
+            dim_mes, by = c("mes" = "n_mes")
+          )
+        
+        dados_filtrados <- dados_agrupados %>%
+          filter(
+            particao %in% particao_escolhido_local,
+            patamar == patamar_escolhido_local,
+            padrao_dia == padrao_dia_escolhido_local,
+            subsistema %in% subsistema_escolhido_local,
+            uf %in% uf_escolhido_local,
+            distribuidora %in% distribuidora_escolhido_local,
+            agrupamento2 %in% agrupamento2_escolhido_local,
+            n_barramento %in% n_barramento_escolhido_local
+          ) 
+        
+        dados <- dados_filtrados %>% 
+          filter(
+            ano == 2023
+          ) %>% 
+          group_by(
+            mes, nome_mes
+          ) %>% 
+          summarise(
+            pinst = sum(pinst_gd_mw, na.rm = TRUE), .groups = "keep"
+          ) %>% 
+          ungroup() %>% 
+          arrange(
+            mes
+          )
+        
+        
+        dados
+      } else {
+        NULL
+      }
+
+
+      })
+
+    
+    #### Gráficos + Bind ####  
+
     if (modelo == "PAR") {
       
       output$grafico <- renderGirafe({
@@ -523,6 +541,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         )
       
     } else if (modelo == "QUA") {
+      
         
       output$grafico <- renderGirafe({
         
@@ -530,6 +549,18 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         
         grafico <- grafico_barras(dados_grafico)
         
+        
+        # if (input$escolhe_particao == "Geração MMGD") {
+        # 
+        #   dados_pot_instalada_mmgd <- pot_instalada_mmgd()
+        # 
+        #   if (!is.null(dados_pot_instalada_mmgd)) {
+        # 
+        #     grafico <- grafico_barras_pinst_mmgd(dados_grafico, dados_pot_instalada_mmgd)
+        #   }
+        # }
+        
+
         girafe(
           code = {print(grafico)},
           width_svg = 8,
