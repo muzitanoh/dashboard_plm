@@ -356,6 +356,46 @@ pinst_mmgd <- read_rds("rds/pinst_mmgd.rds") %>%
   )
 
 
+#### Dados Quadri ####
+
+dados_quadri_carga_se_co <- read_rds("rds/dados_quadri_carga_se_co.rds") 
+dados_quadri_carga_nne <- read_rds("rds/dados_quadri_carga_nne.rds") 
+dados_quadri_carga_sul <- read_rds("rds/dados_quadri_carga_sul.rds") 
+
+#possibilidade de tirar a partição por barramento para facilitar
+
+dados_quadri <-
+  bind_rows(
+    dados_quadri_carga_se_co,
+    dados_quadri_carga_nne,
+    dados_quadri_carga_sul
+  )
+
+# dados_quadri_mmgd <- read_rds("rds/dados_quadri_mmgd.rds") %>% 
+#   mutate(
+#     tipo_gd = str_to_clean(tipo_gd)
+#   )
+
+# dados_quadri_mmgd_ <- dados_quadri_mmgd %>% 
+#   pivot_wider(
+#     id_cols = c("ano","mes", "n_barramento", "distribuidora"),
+#     names_from = "tipo_gd",
+#     values_from = "pinst_gd_mw"
+#   ) %>% 
+#   mutate(
+#     micro = if_else(is.na(micro), 0, micro),
+#     mini = if_else(is.na(mini), 0, mini)
+#   )
+
+
+
+
+
+
+
+
+
+
 
 
 

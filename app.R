@@ -18,7 +18,9 @@ sidebar <- dashboardSidebar(width = 250,
                                        menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul"),
                                        menuSubItem("Comparativo Mensal (LÍQ) SUL", tabName = "analise_mensal_liq_sul"),
                                        menuSubItem("Comparativo Mensal NNE", tabName = "analise_mensal_nne"),
-                                       menuSubItem("Comparativo Mensal (LÍQ) NNE", tabName = "analise_mensal_liq_nne")
+                                       menuSubItem("Comparativo Mensal (LÍQ) NNE", tabName = "analise_mensal_liq_nne"),
+                                       menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri"),
+                                       menuSubItem("Comparativo Mensal (LÍQ) QUADRI", tabName = "analise_mensal_liq_quadri")
                                        
                               ),
                               menuItem("Ferramentas Gerais" , tabName = "ferramentas_gerais",
@@ -71,6 +73,15 @@ body <- dashboardBody(
             modulosUI(namespace = "analise_mensal_liq_nne", dados_painel = dados_nne, modelo = "liquido")
             
     ),
+    tabItem(tabName = "analise_mensal_quadri",
+            
+            modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal_quadri")
+    ),
+    tabItem(tabName = "analise_mensal_liq_quadri",
+            
+            modulosUI(namespace = "analise_mensal_liq_quadri", dados_painel = dados_quadri, modelo = "liquido_quadri")
+            
+    ),
 
     
     
@@ -113,6 +124,8 @@ server <- function(input, output, session) {
   modulosServer(namespace = "analise_mensal_liq_sul", dados_painel =  dados_sul, modelo = "liquido", pinst_mmgd = NULL)
   modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "normal", pinst_mmgd = pinst_mmgd)
   modulosServer(namespace = "analise_mensal_liq_nne", dados_painel =  dados_nne, modelo = "liquido", pinst_mmgd = NULL)
+  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "normal_quadri", pinst_mmgd = pinst_mmgd)
+  modulosServer(namespace = "analise_mensal_liq_quadri", dados_painel =  dados_quadri, modelo = "liquido_quadri", pinst_mmgd = NULL)
   
 }
 

@@ -72,6 +72,14 @@ modulosUI <- function(namespace, dados_painel, modelo){
     coluna_filtros <- verticalLayout(
       select_ano, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr()
     )
+  } else if (modelo == "normal_quadri") {
+    coluna_filtros <- verticalLayout(
+      select_particao, select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr()
+    )
+  } else if (modelo == "liquido_quadri") {
+    coluna_filtros <- verticalLayout(
+      select_padrao_dia, select_patamar, select_distribuidora, select_agrupamento2, tags$hr(), tags$hr(), tags$hr()
+    )
   }
   
   
@@ -448,6 +456,138 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         
       })
       
+    } else if (modelo == "normal_quadri") {
+      
+      dados_tratados <- reactive({
+        
+        particao_escolhido_local <- particao_escolhido()
+        patamar_escolhido_local <- patamar_escolhido()
+        padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        
+        dados <- dados_painel %>% 
+          filter(
+            particao %in% particao_escolhido_local,
+            patamar == patamar_escolhido_local,
+            padrao_dia == padrao_dia_escolhido_local,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
+            agrupamento2 %in% agrupamento2_escolhido_local
+          ) %>%
+          group_by(
+            nome_mes = mes, ciclo
+          ) %>% 
+          summarise(
+            mw = sum(mw), .groups = "keep"
+          ) %>% 
+          ungroup() %>% 
+          left_join(
+            dim_mes, by = "nome_mes"
+          ) %>% 
+          arrange(
+            ciclo
+          ) %>% 
+          arrange(
+            n_mes
+          ) %>% 
+          mutate(
+            tooltip = str_glue(
+              # "{numero_br(mw)} MW"
+              "Ciclo: {ciclo}
+          {numero_br(mw)} MW"
+            )
+          )
+        
+      })
+      
+      pot_instalada_mmgd <- reactive({
+        
+        
+        ano_escolhido_local <- ano_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        
+        dados_dim <- dados_painel %>%
+          select(
+            n_barramento, distribuidora, agrupamento1, agrupamento2
+          ) %>% 
+          distinct_all()
+        
+        
+        pinst <- pinst_mmgd %>%
+          left_join(
+            dados_dim, by = "n_barramento"
+          ) %>%
+          filter(
+            ano == ano_escolhido_local,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
+            agrupamento2 %in% agrupamento2_escolhido_local
+          ) %>%
+          summarise(
+            pinst = sum(pinst), .groups = "keep"
+          ) %>%
+          pull()
+        
+        pinst
+        
+      })
+      
+      
+    } else if (modelo == "liquido_quadri") {
+      
+      dados_tratados <- reactive({
+        
+        patamar_escolhido_local <- patamar_escolhido()
+        padrao_dia_escolhido_local <- padrao_dia_escolhido()
+        distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento2_escolhido_local <- agrupamento2_escolhido()
+        
+        dados <- dados_painel %>% 
+          filter(
+            patamar == patamar_escolhido_local,
+            padrao_dia == padrao_dia_escolhido_local,
+            distribuidora %in% distribuidora_escolhido_local,
+            # agrupamento1 %in% agrupamento1_,
+            agrupamento2 %in% agrupamento2_escolhido_local
+          ) %>%
+          mutate(
+            particao = if_else(str_detect(particao, "^carg"), "carga_total", particao),
+            particao = if_else(str_detect(particao, "^ger"), "ger_total", particao)
+          ) %>% 
+          group_by(
+            particao, nome_mes = mes, ciclo
+          ) %>% 
+          summarise(
+            mw = sum(mw), .groups = "keep"
+          ) %>% 
+          ungroup() %>% 
+          pivot_wider(
+            values_from = "mw",
+            names_from = "particao"
+          ) %>% 
+          mutate(
+            mw = carga_total - ger_total
+          ) %>% 
+          left_join(
+            dim_mes, by = "nome_mes"
+          ) %>% 
+          arrange(
+            ciclo
+          ) %>% 
+          arrange(
+            n_mes
+          ) %>% 
+          mutate(
+            tooltip = str_glue(
+              "Ciclo: {ciclo}
+            {numero_br(mw)} MW"
+            )
+          )
+        
+      })
+      
     }
     
     
@@ -455,7 +595,22 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
     
     
-    if(modelo == "normal") {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  # Gráficos  
+    
+    
+    if(modelo == "normal"|modelo == "normal_quadri") {
       
       output$grafico <- renderGirafe({
         
@@ -465,7 +620,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         grafico <- grafico_barras(dados_grafico)
         
         
-        if (modelo == "normal") {
+        if (modelo == "normal"|modelo == "normal_quadri") {
           
           particao_escolhido_local <- particao_escolhido()
           pot_instalada_mmgd_local <- pot_instalada_mmgd()
@@ -498,7 +653,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
           agrupamento2_escolhido()
         )
       
-    } else if(modelo == "liquido") {
+    } else if(modelo == "liquido"|modelo == "liquido_quadri") {
       
       output$grafico <- renderGirafe({
         
@@ -508,7 +663,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         grafico <- grafico_barras(dados_grafico)
         
         
-        if (modelo == "normal") {
+        if (modelo == "normal"|modelo == "normal_quadri") {
           
           particao_escolhido_local <- particao_escolhido()
           pot_instalada_mmgd_local <- pot_instalada_mmgd()
