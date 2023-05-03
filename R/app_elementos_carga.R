@@ -118,6 +118,7 @@ modulosUI <- function(namespace, dados_painel, modelo){
     girafeOutput(NS(namespace, "grafico"), height = "65vh")
   )
   
+  tabela <- reactableOutput("tabela_dados")
   
   splitLayout(
     style = "overflow:hidden;",
@@ -125,6 +126,27 @@ modulosUI <- function(namespace, dados_painel, modelo){
     painel_filtros,
     grafico
   )
+  
+  
+    # if (modelo == "PAR") {
+    #   splitLayout(
+    #     style = "overflow:hidden;",
+    #     cellWidths = c("23%", "77%"),
+    #     painel_filtros,
+    #     grafico
+    #   )
+    # } else if (modelo == "QUA") {
+    #   splitLayout(
+    #     style = "overflow:hidden;",
+    #     cellWidths = c("23%", "77%"),
+    #     painel_filtros,
+    #     verticalLayout(
+    #       grafico,
+    #       tabela
+    #     )
+    #   )
+    # }
+
   
   # tagList(
   #   wellPanel(faixa_filtros),
@@ -573,7 +595,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       })
 
     
-    #### Gráficos + Bind ####  
+    #### Elementos + Bind ####  
 
     if (modelo == "PAR") {
       
@@ -665,7 +687,19 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       
       
       }  
-        
+       
+    
+    # output$tabela_dados <- renderReactable({
+    #   reactable(dados_filtrados(), searchable = TRUE)
+    # }) 
+    
+    data <- reactive({
+      mtcars[, c("mpg", "cyl", "disp", "hp")]
+    })
+    
+    output$tabela_dados <- renderReactable({
+      reactable(data(), searchable = TRUE, sortable = TRUE)
+    })
     
 
   })
