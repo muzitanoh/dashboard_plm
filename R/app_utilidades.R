@@ -36,6 +36,7 @@ library(purrr)
 library(furrr)
 library(writexl)
 library(tictoc)
+library(dplyr)
 
 options(warn = - 1) # Disable warning messages globally
 
@@ -407,7 +408,7 @@ add_linha_pinst <- function(grafico, dados_pot_instalada_mmgd){
 
 #### Aquisição - Dados ####
 
-# #mg:
+#mg:
 # dados_cemigd <- read_rds("rds/dados_cemigd.rds")
 # 
 # dados_sens_cemigd <- read_rds("rds/sensi_cemig.rds")
@@ -455,15 +456,15 @@ add_linha_pinst <- function(grafico, dados_pot_instalada_mmgd){
 # 
 # #nne:
 # dados_nne <- read_rds("rds/dados_nne.rds")
-# 
-# # Dados SCPCB:
-# # dados_scpcb <- bind_rows(
-# #   dados_mg, dados_sp, dados_go, dados_mt_ac_ro
-# # ) %>%
-# #   filter(
-# #     padrao_dia %in% c("dia_util", "domingo")
-# #   )
-# #
+
+# Dados SCPCB:
+# dados_scpcb <- bind_rows(
+#   dados_mg, dados_sp, dados_go, dados_mt_ac_ro
+# ) %>%
+#   filter(
+#     padrao_dia %in% c("dia_util", "domingo")
+#   )
+#
 # 
 # 
 # #potência instalada de mmgd por barramento:

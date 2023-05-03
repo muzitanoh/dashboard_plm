@@ -61,9 +61,17 @@ modulosUI <- function(namespace, dados_painel, modelo){
     multiple = TRUE
   )
   
+  select_agrupamento1 <- selectInput(
+    inputId = NS(namespace, "escolhe_agrupamento1"),
+    label = "Região 1:",
+    choices = str_to_title(sort(unique(dados_painel$agrupamento1))),
+    selected = NULL,
+    multiple = TRUE
+  )
+  
   select_agrupamento2 <- selectInput(
     inputId = NS(namespace, "escolhe_agrupamento2"),
-    label = "Região:",
+    label = "Região 2:",
     choices = str_to_title(sort(unique(dados_painel$agrupamento2))),
     selected = NULL,
     multiple = TRUE
@@ -94,7 +102,8 @@ modulosUI <- function(namespace, dados_painel, modelo){
     )
   } else if (modelo == "QUA") {
     coluna_filtros <- verticalLayout(
-      select_particao, select_padrao_dia, select_patamar, select_subsistema, select_uf, select_distribuidora, select_agrupamento2, select_n_barramento
+      select_particao, select_padrao_dia, select_patamar, select_subsistema, select_uf, 
+      select_distribuidora, select_agrupamento1, select_agrupamento2, select_n_barramento
     )
   } 
   
@@ -193,6 +202,15 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       }
     })
     
+    agrupamento1_escolhido <- reactive({
+      
+      if (is.null(input$escolhe_agrupamento1)) {
+        sort(unique(dados_painel$agrupamento1))
+      } else{
+        str_to_upper(input$escolhe_agrupamento1)
+      }
+    })
+    
     agrupamento2_escolhido <- reactive({
     
       if (is.null(input$escolhe_agrupamento2)) {
@@ -251,6 +269,12 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       )
       
       updateSelectInput(
+        inputId = "escolhe_agrupamento1",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento1))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
         inputId = "escolhe_agrupamento2",
         choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
         selected = NULL
@@ -276,6 +300,12 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       )
       
       updateSelectInput(
+        inputId = "escolhe_agrupamento1",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento1))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
         inputId = "escolhe_agrupamento2",
         choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
         selected = NULL
@@ -293,6 +323,31 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       distribuidora_escolhido_local <- distribuidora_escolhido()
       
       dados_filtrados <- filter(dados_painel, distribuidora %in% distribuidora_escolhido_local)
+      
+      updateSelectInput(
+        inputId = "escolhe_agrupamento1",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento1))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_agrupamento2",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento2))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
+        inputId = "escolhe_n_barramento",
+        choices = sort(unique(dados_filtrados$n_barramento)),
+        selected = NULL
+      )
+    })
+    
+    observeEvent(input$escolhe_agrupamento1, {
+      
+      agrupamento1_escolhido_local <- agrupamento1_escolhido()
+      
+      dados_filtrados <- filter(dados_painel, agrupamento1 %in% agrupamento1_escolhido_local)
       
       updateSelectInput(
         inputId = "escolhe_agrupamento2",
@@ -314,6 +369,12 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
       dados_filtrados <- filter(dados_painel, agrupamento2 %in% agrupamento2_escolhido_local)
       
       updateSelectInput(
+        inputId = "escolhe_agrupamento1",
+        choices = str_to_title(sort(unique(dados_filtrados$agrupamento1))),
+        selected = NULL
+      )
+      
+      updateSelectInput(
         inputId = "escolhe_n_barramento",
         choices = sort(unique(dados_filtrados$n_barramento)),
         selected = NULL
@@ -327,8 +388,8 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     
     #### Tratamento #### 
     
-    dados_tratados <- reactive({
-        
+    dados_filtrados <- reactive({
+      
       if (modelo == "PAR") {
         
         particao_escolhido_local <- particao_escolhido()
@@ -357,6 +418,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
         subsistema_escolhido_local <- subsistema_escolhido()
         uf_escolhido_local <- uf_escolhido()
         distribuidora_escolhido_local <- distribuidora_escolhido()
+        agrupamento1_escolhido_local <- agrupamento1_escolhido()
         agrupamento2_escolhido_local <- agrupamento2_escolhido()
         n_barramento_escolhido_local <- n_barramento_escolhido()
         
@@ -368,10 +430,16 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
             subsistema %in% subsistema_escolhido_local,
             uf %in% uf_escolhido_local,
             distribuidora %in% distribuidora_escolhido_local,
+            agrupamento1 %in% agrupamento1_escolhido_local,
             agrupamento2 %in% agrupamento2_escolhido_local,
             n_barramento %in% n_barramento_escolhido_local
           ) 
       }
+    })
+    
+    dados_tratados <- reactive({
+        
+      dados_filtrados <- dados_filtrados()
     
         
         if (input$escolhe_particao != "Carga Líquida") {
@@ -397,7 +465,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
               tooltip = str_glue(
                 # "{numero_br(mw)} MW"
                 "Ciclo: {ciclo}
-          {numero_br(mw)} MW"
+                Pot.: {numero_br(mw)} MW"
               )
             )
           
@@ -438,7 +506,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
             tooltip = str_glue(
               # "{numero_br(mw)} MW"
               "Ciclo: {ciclo}
-          {numero_br(mw)} MW"
+              Pot.:{numero_br(mw)} MW"
             )
           )
         
@@ -557,6 +625,13 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
                 dados_grafico,
                 dados_pot_instalada_mmgd,
                 by = c("n_mes" = "mes")
+              ) %>% 
+              mutate(
+                tooltip = str_glue(
+                  "Ciclo: {ciclo}
+                  Pot.: {numero_br(mw)} MW
+                  FC: {numero_br(mw*100/pinst, 1, .1)}%"
+                )
               )
 
             grafico <- grafico_barras_pinst_mmgd(dados_grafico_pot_inst)
@@ -583,6 +658,7 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
           subsistema_escolhido(),
           uf_escolhido(),
           distribuidora_escolhido(),
+          agrupamento1_escolhido(),
           agrupamento2_escolhido(),
           n_barramento_escolhido()
         )

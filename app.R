@@ -12,11 +12,13 @@ sidebar <- dashboardSidebar(width = 250,
                             sidebarMenu(
                               menuItem("Análise dos Dados de Carga", tabName = "analise_carga", startExpanded = TRUE,
                                        
-                                       # menuSubItem("Comparativo Mensal MG-GO_MT", tabName = "analise_mensal"),
-                                       # menuSubItem("Comparativo Mensal SP-RJ-ES", tabName = "analise_mensal_sp"),
-                                       # menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul"),
+                                       menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri"),
                                        # menuSubItem("Comparativo Mensal NNE", tabName = "analise_mensal_nne"),
-                                       menuSubItem("Comparativo Mensal QUADRI", tabName = "analise_mensal_quadri")
+                                       # menuSubItem("Comparativo Mensal SECO 1", tabName = "analise_mensal"),
+                                       # menuSubItem("Comparativo Mensal SECO 2", tabName = "analise_mensal_sp"),
+                                       # menuSubItem("Comparativo Mensal SUL", tabName = "analise_mensal_sul")
+                                       menuSubItem("Exemplo Carga", tabName = "exemplo_carga")
+
                                        
                               ),
                               menuItem("Ferramentas Gerais" , tabName = "ferramentas_gerais",
@@ -33,6 +35,14 @@ body <- dashboardBody(
   use_waiter(),
   theme_custom,
   tabItems(
+    tabItem(tabName = "analise_mensal_quadri",
+            
+            modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA")
+    ),
+    # tabItem(tabName = "analise_mensal_nne",
+    #         
+    #         modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR")
+    # ),
     # tabItem(tabName = "analise_mensal",
     # 
     #         modulosUI(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "PAR")
@@ -45,14 +55,11 @@ body <- dashboardBody(
     # 
     #         modulosUI(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR")
     # ),
-    # tabItem(tabName = "analise_mensal_nne",
-    # 
-    #         modulosUI(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR")
-    # ),
-    tabItem(tabName = "analise_mensal_quadri",
+    tabItem(tabName = "exemplo_carga",
             
-            modulosUI(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA")
+            HTML('<img class=logo-epe src=exemplo.png width="1000" >')
     ),
+
 
     
     tabItem(tabName = "analise_organon",
@@ -86,11 +93,11 @@ server <- function(input, output, session) {
   
   options(shiny.maxRequestSize = 50*1024^2)
   
+  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = dados_quadri_mmgd)
+  # modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal", dados_painel =  dados_mg_go_mt, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal_sp", dados_painel =  dados_sp_rj_es, modelo = "PAR", pinst_mmgd = pinst_mmgd)
   # modulosServer(namespace = "analise_mensal_sul", dados_painel =  dados_sul, modelo = "PAR", pinst_mmgd = pinst_mmgd)
-  # modulosServer(namespace = "analise_mensal_nne", dados_painel =  dados_nne, modelo = "PAR", pinst_mmgd = pinst_mmgd)
-  modulosServer(namespace = "analise_mensal_quadri", dados_painel =  dados_quadri, modelo = "QUA", pinst_mmgd = dados_quadri_mmgd)
   
 }
 
