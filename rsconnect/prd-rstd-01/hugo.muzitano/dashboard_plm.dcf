@@ -5,9 +5,10 @@ account: hugo.muzitano
 server: prd-rstd-01
 hostUrl: http://prd-rstd-01/__api__
 appId: 47
-bundleId: 237
+bundleId: 266
 url: http://prd-rstd-01/dashboardplm/
-when: 1680132720.71289
-lastSyncTime: 1680132720.71291
+when: 1683135954.5916
+lastSyncTime: 1683135954.59161
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: www/Explicacao_CARGA.pptx

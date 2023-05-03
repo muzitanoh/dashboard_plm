@@ -16,12 +16,12 @@ modulosUIF <- function(namespace, modelo){
     label = list(
       tags$div(
         "Anexe a(s) planilhas desejadas:",
-        style = "font-size: 1.6vh;",
-        tipify(
-          title = help_org
-          # ,
-          # el = bsButton(inputId = "help_org", label = "", icon = icone_help, style = "inverse", size = "extra-small")
-        )
+        style = "font-size: 1.6vh;"
+        #,
+        # tipify(
+        #   title = help_org,
+        #   el = bsButton(inputId = "help_org", label = "", icon = icone_help, style = "inverse", size = "extra-small")
+        # )
       )
     )
   )
@@ -34,12 +34,12 @@ modulosUIF <- function(namespace, modelo){
     label = list(
       tags$div(
         "Anexe a(s) planilhas desejadas:",
-        style = "font-size: 1.6vh;",
-        tipify(
-          title = help_orgt
-          #,
-          # el = bsButton(inputId = "help_orgt", label = "", icon = icone_help, style = "inverse", size = "extra-small")
-        )
+        style = "font-size: 1.6vh;"
+        #,
+        # tipify(
+        #   title = help_orgt,
+        #   el = bsButton(inputId = "help_orgt", label = "", icon = icone_help, style = "inverse", size = "extra-small")
+        # )
       )
     )
   )
