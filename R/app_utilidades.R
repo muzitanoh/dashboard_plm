@@ -1,27 +1,27 @@
-library(shiny)
 library(shinyjs)
 library(tidyverse)
-library(shinyWidgets)
 library(shinydashboard)
-library(shinydashboardPlus)
 library(dashboardthemes)
 library(ggiraph)
-library(readxl)
-library(scales)
-library(reactable)
-library(shinyWidgets)
-library(tibble)
 library(waiter)
-library(janitor)
-library(magrittr)
-library(lubridate)
-library(stringr)
 library(scales)
-library(readr)
-library(stringi)
-library(purrr)
-library(writexl)
-library(tictoc)
+
+# library(shiny)
+# library(shinyWidgets)
+# library(shinydashboardPlus)
+# library(readxl)
+# library(reactable)
+# library(shinyWidgets)
+# library(tibble)
+# library(janitor)
+# library(magrittr)
+# library(lubridate)
+# library(stringr)
+# library(readr)
+# library(stringi)
+# library(purrr)
+# library(writexl)
+# library(tictoc)
 
 options(warn = - 1) # Disable warning messages globally
 
@@ -393,70 +393,72 @@ add_linha_pinst <- function(grafico, dados_pot_instalada_mmgd){
 
 #### Aquisição - Dados ####
 
-#mg:
-dados_cemigd <- read_rds("rds/dados_cemigd.rds")
-
-dados_sens_cemigd <- read_rds("rds/sensi_cemig.rds")
-
-dados_mg <- read_rds("rds/dados_mg.rds")
-
-dados_mg <- bind_rows(
-  dados_mg, dados_cemigd, dados_sens_cemigd
-)
-
-# go-mt:
-dados_go <- read_rds("rds/dados_go.rds")
-
-dados_mt_ac_ro <- read_rds("rds/dados_mt_ac_ro.rds")
-
-dados_go_mt <- bind_rows(
-  dados_go, dados_mt_ac_ro
-)
-
-# mg-go-mt:
-dados_mg_go_mt <- bind_rows(
-  dados_mg, dados_go_mt
-)
-
-
-
-
+# #mg:
+# dados_cemigd <- read_rds("rds/dados_cemigd.rds")
+# 
+# dados_sens_cemigd <- read_rds("rds/sensi_cemig.rds")
+# 
+# dados_mg <- read_rds("rds/dados_mg.rds")
+# 
+# dados_mg <- bind_rows(
+#   dados_mg, dados_cemigd, dados_sens_cemigd
+# )
+# 
+# # go-mt:
+# dados_go <- read_rds("rds/dados_go.rds")
+# 
+# dados_mt_ac_ro <- read_rds("rds/dados_mt_ac_ro.rds")
+# 
+# dados_go_mt <- bind_rows(
+#   dados_go, dados_mt_ac_ro
+# )
+# 
+# # mg-go-mt:
+# dados_mg_go_mt <- bind_rows(
+#   dados_mg, dados_go_mt
+# )
+# 
+# 
+# 
+# 
 # sp e rj-es:
 # dados_sp <- read_rds("rds/dados_sp.rds")
 dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>%
   mutate(
     agrupamento2 = str_to_upper(agrupamento2)
   )
-
-dados_rj_es <- read_rds("rds/dados_rj_es.rds")
-
-dados_sp_rj_es <- bind_rows(
-  dados_sp, dados_rj_es
-  )
-
-
-
-# sul:
-dados_sul <- read_rds("rds/dados_sul.rds")
-
-#nne:
-dados_nne <- read_rds("rds/dados_nne.rds")
-
-# Dados SCPCB:
-# dados_scpcb <- bind_rows(
-#   dados_mg, dados_sp, dados_go, dados_mt_ac_ro
-# ) %>%
-#   filter(
-#     padrao_dia %in% c("dia_util", "domingo")
+# 
+# dados_rj_es <- read_rds("rds/dados_rj_es.rds")
+# 
+# dados_sp_rj_es <- bind_rows(
+#   dados_sp, dados_rj_es
 #   )
-# 
-# 
 
-#potência instalada de mmgd por barramento:
-pinst_mmgd <- read_rds("rds/pinst_mmgd.rds") %>%
-  rename(
-    n_barramento = barra
-  )
+dados_sp_rj_es <- dados_sp
+# 
+# 
+# 
+# # sul:
+# dados_sul <- read_rds("rds/dados_sul.rds")
+# 
+# #nne:
+# dados_nne <- read_rds("rds/dados_nne.rds")
+# 
+# # Dados SCPCB:
+# # dados_scpcb <- bind_rows(
+# #   dados_mg, dados_sp, dados_go, dados_mt_ac_ro
+# # ) %>%
+# #   filter(
+# #     padrao_dia %in% c("dia_util", "domingo")
+# #   )
+# # 
+# # 
+# 
+# #potência instalada de mmgd por barramento:
+# pinst_mmgd <- read_rds("rds/pinst_mmgd.rds") %>%
+#   rename(
+#     n_barramento = barra
+#   )
 
 
 #### Dados Quadri ####
