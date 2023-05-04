@@ -118,7 +118,7 @@ modulosUI <- function(namespace, dados_painel, modelo){
     girafeOutput(NS(namespace, "grafico"), height = "65vh")
   )
   
-  tabela <- reactableOutput("tabela_dados")
+  # tabela <- reactableOutput("tabela_dados")
   
   splitLayout(
     style = "overflow:hidden;",
@@ -693,13 +693,6 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
     #   reactable(dados_filtrados(), searchable = TRUE)
     # }) 
     
-    data <- reactive({
-      mtcars[, c("mpg", "cyl", "disp", "hp")]
-    })
-    
-    output$tabela_dados <- renderReactable({
-      reactable(data(), searchable = TRUE, sortable = TRUE)
-    })
     
 
   })
