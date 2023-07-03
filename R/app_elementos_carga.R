@@ -551,8 +551,9 @@ modulosServer <- function(namespace, dados_painel, modelo, pinst_mmgd){
           distinct_all()
         
         dados_agrupados <- pinst_mmgd %>% 
+          select(-distribuidora) %>% 
           left_join(
-            dados_dim, by = c("n_barramento", "distribuidora")
+            dados_dim, by = c("n_barramento")
           ) %>% 
           left_join(
             dim_mes, by = c("mes" = "n_mes")

@@ -4,11 +4,11 @@ username: hugo.muzitano
 account: hugo.muzitano
 server: prd-rstd-01
 hostUrl: http://prd-rstd-01/__api__
-appId: 47
-bundleId: 266
-url: http://prd-rstd-01/dashboardplm/
-when: 1683135954.5916
-lastSyncTime: 1683135954.59161
+appId: 65
+bundleId: 315
+url: http://prd-rstd-01/content/cb56287a-96a0-46c9-8dd7-900f346403e7/
+when: 1688403306.71875
+lastSyncTime: 1688403306.71876
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: www/Explicacao_CARGA.pptx
+ignoredFiles: Atualizaçãoes App Carga.pptx

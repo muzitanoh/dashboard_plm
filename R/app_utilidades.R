@@ -417,16 +417,19 @@ add_linha_pinst <- function(grafico, dados_pot_instalada_mmgd){
 # dados_mg_go_mt <- bind_rows(
 #   dados_mg, dados_go_mt
 # )
+
+ # dados_mg_go_mt <- dados_go
+
 # 
 # 
 # 
 # 
 # sp e rj-es:
 # dados_sp <- read_rds("rds/dados_sp.rds")
-dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>%
-  mutate(
-    agrupamento2 = str_to_upper(agrupamento2)
-  )
+# dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>%
+#   mutate(
+#     agrupamento2 = str_to_upper(agrupamento2)
+  # )
 # 
 # dados_rj_es <- read_rds("rds/dados_rj_es.rds")
 # 
@@ -434,7 +437,7 @@ dados_sp <- read_rds("rds/dados_sp_ajustado.rds") %>%
 #   dados_sp, dados_rj_es
 #   )
 
-dados_sp_rj_es <- dados_sp
+# dados_sp_rj_es <- dados_sp
 # 
 # 
 # 
@@ -463,17 +466,30 @@ dados_sp_rj_es <- dados_sp
 
 #### Dados Quadri ####
 
-dados_quadri_carga_se_co <- read_rds("rds/dados_quadri_carga_se_co.rds") 
-dados_quadri_carga_nne <- read_rds("rds/dados_quadri_carga_nne.rds") 
-dados_quadri_carga_sul <- read_rds("rds/dados_quadri_carga_sul.rds") 
+dados_quadri_2022_old <- read_rds("rds/dados_carga_quadri_2022_old.rds") 
+dados_quadri_2023_old <- read_rds("rds/dados_carga_quadri_2023_old.rds") 
 
-#possibilidade de tirar a partição por barramento para facilitar
+dados_quadri_old <-
+  bind_rows(
+    dados_quadri_2022_old,
+    dados_quadri_2023_old
+  )
+
+dados_quadri_mmgd_old <- read_rds("rds/dados_quadri_mmgd_old.rds") %>% 
+  filter(
+    !is.na(n_barramento)
+  )
+
+##
+
+dados_quadri_2022 <- read_rds("rds/dados_carga_quadri_2022.rds") 
+dados_quadri_2023 <- read_rds("rds/dados_carga_quadri_2023.rds") %>% mutate(ciclo = "Quadrim 2023 NEW")
 
 dados_quadri <-
   bind_rows(
-    dados_quadri_carga_se_co,
-    dados_quadri_carga_nne,
-    dados_quadri_carga_sul
+    dados_quadri_2022,
+    dados_quadri_2023_old,
+    dados_quadri_2023
   )
 
 dados_quadri_mmgd <- read_rds("rds/dados_quadri_mmgd.rds") %>% 
@@ -483,6 +499,12 @@ dados_quadri_mmgd <- read_rds("rds/dados_quadri_mmgd.rds") %>%
 
 
 
+## Considerações
 
-
+# Valores de MMGD suprimidos nos dados novos por não ter número do barramento
+# mmgd_suprimida <- read_rds("rds/dados_quadri_mmgd.rds") %>%
+#   filter(
+#     is.na(n_barramento),
+#     is.na(distribuidora)
+#   )
 
